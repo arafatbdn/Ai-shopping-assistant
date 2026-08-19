@@ -22,15 +22,30 @@ export default function ProductUploadForm({ onCreated }) {
     event.preventDefault();
     setLoading(true);
     setStatus({ type: '', message: '' });
+    const formElement = event.currentTarget;
     try {
-      const data = await createAdminProduct(new FormData(event.currentTarget));
-      setStatus({ type: 'success', message: data.message });
-      event.currentTarget.reset();
+      const data = await createAdminProduct(new FormData(formElement));
+      setStatus({ type: 'success', message: data?.message || 'Product uploaded successfully' });
+      formElement.reset();
       if (preview) URL.revokeObjectURL(preview);
       setPreview('');
       onCreated?.(data.product);
     } catch (requestError) {
-      setStatus({ type: 'error', message: requestError.response?.data?.message || 'Product upload failed' });
+      // Surface the real failure: server message, status, and network details.
+      const serverMessage = requestError?.response?.data?.message;
+      const status = requestError?.response?.status;
+      console.error('[ProductUploadForm] upload failed', {
+        message: requestError?.message,
+        status,
+        serverMessage,
+        requestSent: !!requestError?.request,
+      });
+      const detail = serverMessage
+        ? `${serverMessage}${status ? ` (HTTP ${status})` : ''}`
+        : requestError?.message
+          ? `${requestError.message}${status ? ` (HTTP ${status})` : ''}`
+          : 'Product upload failed';
+      setStatus({ type: 'error', message: detail });
     } finally {
       setLoading(false);
     }

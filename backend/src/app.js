@@ -10,6 +10,7 @@ import productRoutes from './routes/product.routes.js';
 import intelligenceRoutes from './routes/intelligence.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import agentRoutes from './routes/agent.routes.js';
+import liveRoutes from './routes/live.routes.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/assistant', assistantRoutes);
 app.use('/api/agent', agentRoutes);
+app.use('/api/live', liveRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);

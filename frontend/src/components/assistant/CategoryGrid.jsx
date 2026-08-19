@@ -11,14 +11,14 @@ export default function CategoryGrid({ onCategorySelect }) {
         <span className="hidden text-xs text-white/35 sm:block">Ask ShopPilot to find the perfect match</span>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-        {electronicsCategories.map(({ name, query, icon: Icon, color, image }) => (
-          <button key={name} onClick={() => onCategorySelect({ name, query })} className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br ${color} p-4 text-left transition hover:-translate-y-1 hover:border-white/25 hover:bg-white/10`}>
+        {electronicsCategories.map((cat) => (
+          <button key={cat.name} onClick={() => onCategorySelect(cat)} className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br ${cat.color} p-4 text-left transition hover:-translate-y-1 hover:border-white/25 hover:bg-white/10`}>
             <span className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-black/30 text-white/80 shadow-inner transition group-hover:text-mint">
-              <Icon size={19} className={image ? 'opacity-0' : 'opacity-100'} />
-              {image && (
+              <cat.icon size={19} className={cat.image ? 'opacity-0' : 'opacity-100'} />
+              {cat.image && (
                 <img
-                  src={image}
-                  alt={`${name} sample`}
+                  src={cat.image}
+                  alt={`${cat.name} sample`}
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover transition group-hover:scale-105"
                   onError={(event) => {
@@ -29,11 +29,11 @@ export default function CategoryGrid({ onCategorySelect }) {
                 />
               )}
             </span>
-            <span className="mt-4 block text-sm font-medium text-white/80">{name}</span>
+            <span className="mt-4 block text-sm font-medium text-white/80">{cat.name}</span>
             <span className="mt-1 block text-[11px] text-white/35">Shop now</span>
-            {image && (
+            {cat.image && (
               <img
-                src={image}
+                src={cat.image}
                 alt=""
                 aria-hidden="true"
                 loading="lazy"

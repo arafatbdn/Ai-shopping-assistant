@@ -6,7 +6,16 @@ import { addCartItem } from '../../features/cart/api/cartApi.js';
 import { fetchCategoryProducts } from '../../features/catalog/api/catalogApi.js';
 
 function normalizeProduct(product) {
-  return { ...product, id: product.id || product._id, category: product.category?.name || product.category || '' };
+  const image = (Array.isArray(product.images) && product.images.length > 0)
+    ? product.images[0]
+    : (product.image || '');
+  return {
+    ...product,
+    id: product.id || product._id,
+    category: product.category?.name || product.category || '',
+    image,
+    images: Array.isArray(product.images) && product.images.length > 0 ? product.images : (image ? [image] : []),
+  };
 }
 
 export default function CategoryProducts({ category }) {
@@ -23,7 +32,7 @@ export default function CategoryProducts({ category }) {
     let active = true;
     setLoading(true);
     setError('');
-    fetchCategoryProducts(category.query)
+    fetchCategoryProducts(category)
       .then((items) => active && setProducts(items.map(normalizeProduct)))
       .catch(() => active && setError('Category products could not be loaded.'))
       .finally(() => active && setLoading(false));
@@ -65,7 +74,11 @@ export default function CategoryProducts({ category }) {
         {products.map((product) => (
           <article key={product.id} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-mint/30">
             <div className="flex h-36 items-center justify-center bg-gradient-to-br from-violet/20 to-mint/10">
-              {product.images?.[0] ? <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" /> : <PackageSearch size={38} className="text-white/30" />}
+              {(product.images?.[0] || product.image) ? (
+                <img src={product.images?.[0] || product.image} alt={product.name} className="h-full w-full object-cover" />
+              ) : (
+                <PackageSearch size={38} className="text-white/30" />
+              )}
             </div>
             <div className="p-4">
               <p className="truncate text-sm font-semibold text-white/90">{product.name}</p>

@@ -16,7 +16,15 @@ export async function generateNotification(payload) {
 }
 
 export async function createAdminProduct(formData) {
-  const { data } = await api.post('/admin/products', formData);
+  // Strip any default Content-Type so axios lets the browser set the correct
+  // `multipart/form-data; boundary=...` header for FormData payloads.
+  const { data } = await api.post('/admin/products', formData, {
+    headers: { 'Content-Type': undefined },
+    transformRequest: (payload, headers) => {
+      if (headers && typeof headers.delete === 'function') headers.delete('Content-Type');
+      return payload;
+    },
+  });
   return data;
 }
 

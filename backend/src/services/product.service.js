@@ -1,51 +1,75 @@
 import Product from '../models/Product.js';
-import '../models/Category.js';
+import Category from '../models/Category.js';
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-export async function searchProducts({ query = '', minPrice, maxPrice, category, limit = 6 } = {}) {
-  const filter = {};
-  const searchText = query.trim();
+export async function searchProducts({ query = '', minPrice, maxPrice, category, limit = 12 } = {}) {
+  const conditions = [];
+  const searchText = String(query || '').trim();
 
-  if (searchText) {
-    filter.$text = { $search: searchText };
+  if (category) {
+    const cleanCat = String(category).trim();
+    const categoryDocs = await Category.find({
+      $or: [
+        { slug: cleanCat.toLowerCase() },
+        { slug: cleanCat.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
+        { name: new RegExp(`^${escapeRegex(cleanCat)}$`, 'i') },
+      ],
+    }).select('_id');
+    const categoryIds = categoryDocs.map((c) => c._id);
+
+    if (categoryIds.length) {
+      conditions.push({
+        $or: [
+          { category: { $in: categoryIds } },
+          { tags: { $in: [cleanCat.toLowerCase()] } },
+        ],
+      });
+    } else {
+      conditions.push({ tags: { $in: [cleanCat.toLowerCase()] } });
+    }
   }
-  if (category) filter.tags = { $in: [category.toLowerCase()] };
+
   if (Number.isFinite(maxPrice) || Number.isFinite(minPrice)) {
-    filter.price = {};
-    if (Number.isFinite(minPrice)) filter.price.$gte = minPrice;
-    if (Number.isFinite(maxPrice)) filter.price.$lte = maxPrice;
+    const priceFilter = {};
+    if (Number.isFinite(minPrice)) priceFilter.$gte = minPrice;
+    if (Number.isFinite(maxPrice)) priceFilter.$lte = maxPrice;
+    conditions.push({ price: priceFilter });
   }
 
   if (searchText) {
-    const exactFilter = { ...filter };
-    delete exactFilter.$text;
-    const exactProducts = await Product.find({ ...exactFilter, name: new RegExp(`^${escapeRegex(searchText)}$`, 'i') })
+    const baseFilter = conditions.length ? (conditions.length === 1 ? conditions[0] : { $and: conditions }) : {};
+    const exactProducts = await Product.find({
+      ...baseFilter,
+      name: new RegExp(`^${escapeRegex(searchText)}$`, 'i'),
+    })
       .populate('category', 'name slug')
-      .limit(Math.min(Math.max(limit, 1), 20));
+      .limit(Math.min(Math.max(limit, 1), 30));
+
     if (exactProducts.length) return exactProducts;
   }
 
-  let products;
-  try {
-    products = await Product.find(filter)
-      .populate('category', 'name slug')
-      .sort(searchText ? { score: { $meta: 'textScore' }, popularityScore: -1 } : { popularityScore: -1, rating: -1 })
-      .limit(Math.min(Math.max(limit, 1), 20));
-  } catch (error) {
-    // Mongo text indexes are created asynchronously in some environments.
-    if (!searchText || !error.message.includes('text index')) throw error;
-    products = await Product.find({
+  const textConditions = [...conditions];
+  if (searchText) {
+    textConditions.push({
       $or: [
-        { name: new RegExp(searchText, 'i') },
-        { brand: new RegExp(searchText, 'i') },
-        { tags: new RegExp(searchText, 'i') },
+        { name: new RegExp(escapeRegex(searchText), 'i') },
+        { brand: new RegExp(escapeRegex(searchText), 'i') },
+        { description: new RegExp(escapeRegex(searchText), 'i') },
+        { tags: new RegExp(escapeRegex(searchText), 'i') },
       ],
-      ...(Number.isFinite(minPrice) || Number.isFinite(maxPrice) ? { price: { ...(Number.isFinite(minPrice) ? { $gte: minPrice } : {}), ...(Number.isFinite(maxPrice) ? { $lte: maxPrice } : {}) } } : {}),
-    }).populate('category', 'name slug').sort({ popularityScore: -1 }).limit(20);
+    });
   }
+
+  const finalFilter = textConditions.length > 0 ? (textConditions.length === 1 ? textConditions[0] : { $and: textConditions }) : {};
+
+  const products = await Product.find(finalFilter)
+    .populate('category', 'name slug')
+    .sort({ createdAt: -1, popularityScore: -1, rating: -1 })
+    .limit(Math.min(Math.max(limit, 1), 30));
 
   return products;
 }
+

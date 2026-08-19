@@ -2,7 +2,7 @@ import { getGeminiClient, isGeminiConfigured } from '../services/gemini.service.
 import { shoppingToolDefinitions } from './tool-definitions.js';
 import { executeShoppingTool } from './tools/tool-registry.js';
 
-const systemInstruction = `You are ShopPilot, the friendly AI Shopping Assistant for AgentShop AI.
+export const SHOPPING_AGENT_SYSTEM_INSTRUCTION = `You are ShopPilot, the friendly AI Shopping Assistant for AgentShop AI.
 You are not a generic chatbot. Help shoppers search the live catalog, understand purchases, track orders, and take safe shopping actions.
 You cannot access MongoDB, files, or internal services directly. The only way to get current catalog or account data is to call a provided backend tool.
 Always call a tool for product, price, stock, order, purchase-history, insight, or cart questions. Never invent products, prices, stock, order details, or successful actions.
@@ -75,7 +75,7 @@ export async function runShoppingAgent({ message, history = [], user }) {
         model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
         contents,
         config: {
-          systemInstruction,
+          systemInstruction: SHOPPING_AGENT_SYSTEM_INSTRUCTION,
           temperature: 0.2,
           tools: [{ functionDeclarations: shoppingToolDefinitions }],
           toolConfig: { functionCallingConfig: { mode: 'AUTO' } },
