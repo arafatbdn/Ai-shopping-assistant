@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'DM Sans', sans-serif;
+  color: #fff;
+  background: #07111f;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button, input { font: inherit; }
+.font-display { font-family: 'Space Grotesk', sans-serif; }
+.typing-dot { display: inline-block; width: 5px; height: 5px; border-radius: 999px; background: #77e0c3; animation: blink 1.2s infinite; }
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+@keyframes blink { 0%, 70%, 100% { opacity: .25; transform: translateY(0); } 35% { opacity: 1; transform: translateY(-2px); } }
+.wave-bar { display: inline-block; width: 3px; background: currentColor; border-radius: 2px; animation: wave 900ms infinite ease-in-out; height: 8px; }
+.wave-bar.delay-1 { animation-delay: 150ms; }
+.wave-bar.delay-2 { animation-delay: 300ms; }
+@keyframes wave { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1.4); } }
+
+/* White mode keeps the existing component classes reusable while remapping the dark surfaces. */
+.light-theme,
+.light-theme body { color: #172033; background: #f5f7fb; }
+.light-theme .bg-ink { background-color: #f5f7fb !important; }
+.light-theme .text-white { color: #172033 !important; }
+.light-theme [class*="text-white/"] { color: rgba(23, 32, 51, 0.62) !important; }
+.light-theme [class*="border-white/"] { border-color: rgba(23, 32, 51, 0.12) !important; }
+.light-theme [class*="bg-white/\["] { background-color: rgba(23, 32, 51, 0.045) !important; }
+.light-theme [class*="bg-black/"] { background-color: rgba(23, 32, 51, 0.055) !important; }
+.light-theme [class*="bg-\[#101e31\]"] { background-color: rgba(255, 255, 255, 0.92) !important; }
+.light-theme [class*="bg-\[#0d1a2c\]"] { background-color: #ffffff !important; }
+.light-theme [class*="bg-ink/"] { background-color: rgba(255, 255, 255, 0.82) !important; }
+.light-theme .pointer-events-none.fixed { opacity: 0.35; }
+.light-theme input::placeholder { color: rgba(23, 32, 51, 0.4); }

@@ -1,0 +1,58 @@
+﻿
+> ai-shopping-assistant@0.1.0 dev
+> concurrently "npm run dev --prefix backend" "npm run dev --prefix frontend"
+
+[0] 
+[0] > ai-shopping-assistant-api@0.1.0 dev
+[0] > nodemon src/server.js
+[0] 
+[1] 
+[1] > ai-shopping-assistant-web@0.1.0 dev
+[1] > vite
+[1] 
+[0] [33m[nodemon] 3.1.14[39m
+[0] [33m[nodemon] to restart at any time, enter `rs`[39m
+[0] [33m[nodemon] watching path(s): *.*[39m
+[0] [33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[0] [32m[nodemon] starting `node src/server.js`[39m
+[1] 
+[1]   [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m593[22m[2m[0m ms[22m
+[1] 
+[1]   [32mΓ₧£[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+[1] [2m  [32mΓ₧£[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[0] MongoDB connected
+[0] API listening on http://localhost:5000
+[0] [32m[nodemon] restarting due to changes...[39m
+[0] [32m[nodemon] restarting due to changes...[39m
+[0] [32m[nodemon] restarting due to changes...[39m
+[0] [32m[nodemon] restarting due to changes...[39m
+[0] [32m[nodemon] starting `node src/server.js`[39m
+[1] [2m5:26:39 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/auth/me[39m
+[1] AggregateError [ECONNREFUSED]: 
+[1]     at internalConnectMultiple (node:net:1193:18)
+[1]     at afterConnectMultiple (node:net:1783:7)
+[1] [2m5:26:39 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/auth/me[39m
+[1] AggregateError [ECONNREFUSED]: 
+[1]     at internalConnectMultiple (node:net:1193:18)
+[1]     at afterConnectMultiple (node:net:1783:7)
+[0] MongoDB connected
+[0] API listening on http://localhost:5000
+[1] [2m5:30:46 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/app/App.jsx, /src/index.css[22m
+[1] [2m5:30:56 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/navigation/Navigation.jsx, /src/index.css[22m
+[1] [2m5:49:07 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/AdminPage.jsx, /src/index.css[22m
+[1] [2m5:52:29 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/admin/AdminSidebar.jsx, /src/index.css[22m
+[1] [2m5:52:29 PM[22m [36m[1m[vite][22m[39m [33mhmr invalidate [39m[2m/src/components/admin/AdminSidebar.jsx[22m Could not Fast Refresh (export removed)
+[1] [2m5:52:29 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css, /src/pages/AdminPage.jsx[22m
+[1] [2m5:55:31 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/app/App.jsx, /src/index.css[22m
+[1] [2m6:03:30 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/navigation/FloatingAgentButton.jsx, /src/components/assistant/AssistantChatCard.jsx[22m
+[1] [2m6:03:36 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/navigation/FloatingAgentButton.jsx, /src/components/assistant/AssistantChatCard.jsx[22m
+[1] [2m6:03:44 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/navigation/FloatingAgentButton.jsx, /src/components/assistant/AssistantChatCard.jsx[22m
+[1] [2m6:03:56 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/navigation/FloatingAgentButton.jsx, /src/components/assistant/AssistantChatCard.jsx[22m
+[1] [2m6:04:01 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/navigation/FloatingAgentButton.jsx, /src/components/assistant/AssistantChatCard.jsx[22m
+[1] [2m6:04:10 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/navigation/FloatingAgentButton.jsx, /src/components/assistant/AssistantChatCard.jsx[22m
+[1] [2m6:05:02 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[1] [2m6:05:10 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/assistant/AssistantChatCard.jsx, /src/index.css[22m
+[1] [2m6:05:19 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/assistant/AssistantChatCard.jsx, /src/index.css[22m
+[1] [2m6:05:40 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/assistant/AssistantChatCard.jsx, /src/index.css[22m
+[1] [2m6:11:00 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/assistant/ProductResults.jsx, /src/index.css[22m
+[1] [2m6:11:22 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/assistant/AssistantChatCard.jsx, /src/index.css[22m
