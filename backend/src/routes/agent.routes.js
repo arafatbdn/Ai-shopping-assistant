@@ -6,6 +6,6 @@ import { optionalAuth, requireAuth } from '../middleware/auth.js';
 const router = Router();
 
 router.post('/chat', optionalAuth, runAgent);
-router.post('/execute', requireAuth, executeAgentTools);
+router.post('/execute', optionalAuth, executeAgentTools);
 
 export default router;

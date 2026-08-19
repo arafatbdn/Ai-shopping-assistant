@@ -2,11 +2,12 @@ import {
   Bot,
   ChevronRight,
   CircleHelp,
-  Headphones,
+  Headset,
   Loader2,
   Mic,
   Phone,
   PhoneOff,
+  Radio,
   Sparkles,
   Square,
   Volume2,
@@ -73,29 +74,31 @@ function TextPanel({ textChat, onEnterAudio, audioSupported }) {
 
   return (
     <div id="shoppilot-agent-chat" className="relative mx-auto w-full max-w-xl scroll-mt-8">
-      <div className="absolute -inset-4 rounded-[2rem] bg-violet/10 blur-2xl" />
-      <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#101e31]/90 shadow-2xl backdrop-blur-xl">
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+      <div className="relative overflow-hidden rounded-2xl border border-[#232f3e] bg-[#131921] shadow-xl">
+        <div className="flex items-center justify-between border-b border-[#232f3e] bg-[#131921] px-5 py-3.5">
           <div className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-violet/20 text-violet-200"><Bot size={18} /></span>
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#FF9900]/20 text-[#FF9900]">
+              <Bot size={18} />
+            </span>
             <div>
               <div className="flex items-center gap-2">
-                <p className="text-sm font-semibold">ShopPilot · AgentShop AI</p>
+                <p className="text-sm font-bold text-white">ShopPilot · AgentShop AI</p>
                 <AssistantStatusPill listening={listening} loading={loading} speaking={speaking} />
               </div>
-              <p className="mt-1 text-[11px] text-mint">Online · ready to shop</p>
+              <p className="mt-0.5 text-[11px] font-medium text-[#f3a847]">Online · ready to shop</p>
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             {audioSupported && (
               <button
                 type="button"
                 onClick={onEnterAudio}
                 aria-label="Switch to live voice conversation"
                 title="Live voice mode (Gemini)"
-                className="rounded-lg p-2 text-white/45 transition hover:bg-white/10 hover:text-mint"
+                className="flex items-center gap-1.5 rounded-full border border-[#FF9900]/50 bg-[#FF9900]/15 px-3 py-1.5 text-xs font-bold text-[#FF9900] shadow-sm transition hover:border-[#FF9900] hover:bg-[#FF9900]/25 active:scale-95"
               >
-                <Headphones size={16} />
+                <Radio size={14} className="animate-pulse text-[#FF9900]" />
+                <span>Live Voice</span>
               </button>
             )}
             {ttsSupported && (
@@ -103,62 +106,104 @@ function TextPanel({ textChat, onEnterAudio, audioSupported }) {
                 type="button"
                 onClick={toggleVoiceOutput}
                 aria-label={voiceOutputEnabled ? 'Mute voice replies' : 'Enable voice replies'}
-                className={`rounded-lg p-2 transition hover:bg-white/10 ${voiceOutputEnabled ? 'bg-mint/15 text-mint' : 'text-white/35'}`}
+                className={`rounded-lg p-2 transition hover:bg-white/10 ${voiceOutputEnabled ? 'bg-[#FF9900]/20 text-[#FF9900]' : 'text-white/50'}`}
               >
-                {voiceOutputEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                {voiceOutputEnabled ? <Volume2 size={17} /> : <VolumeX size={17} />}
               </button>
             )}
-            <CircleHelp size={17} className="text-white/30" />
+            <CircleHelp size={17} className="text-white/35" />
           </div>
         </div>
 
-        <div className="max-h-[52vh] min-h-[280px] space-y-4 overflow-y-auto p-5 pr-3 [scrollbar-color:rgba(119,224,195,0.55)_transparent] [scrollbar-width:thin]">
+        <div className="max-h-[52vh] min-h-[280px] space-y-4 overflow-y-auto bg-[#131921] p-5 pr-3 [scrollbar-color:rgba(255,153,0,0.5)_transparent] [scrollbar-width:thin]">
           <div className="flex gap-3">
-            <span className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-violet/20 text-violet-200"><Sparkles size={13} /></span>
-            <div className="max-w-[84%] rounded-2xl rounded-tl-sm bg-white/[0.06] px-4 py-3 text-sm leading-6 text-white/75">
-              👋 Hi! I’m **ShopPilot**, your AgentShop AI shopping agent. Tell me what you need and I’ll 🔍 search the live catalog or 📦 help with your orders.
+            <span className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[#FF9900]/20 text-[#FF9900]">
+              <Sparkles size={13} />
+            </span>
+            <div className="max-w-[84%] rounded-2xl rounded-tl-sm border border-white/10 bg-[#232f3e] px-4 py-3 text-sm leading-6 text-white/90">
+              👋 Hi! I’m <strong className="text-[#FF9900]">ShopPilot</strong>, your AgentShop AI shopping agent. Tell me what you need and I’ll 🔍 search the live catalog or 📦 help with your orders.
             </div>
           </div>
-          {messages.map((chatMessage) => chatMessage.role === 'user' ? (
-            <div key={chatMessage.id} className="ml-auto max-w-[84%] rounded-2xl rounded-tr-sm bg-violet px-4 py-3 text-sm leading-6 text-white">
-              {chatMessage.content}
-            </div>
-          ) : (
-            <div key={chatMessage.id} className="flex gap-3">
-              <span className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-violet/20 text-violet-200"><Sparkles size={13} /></span>
-              <div className="max-w-[84%] space-y-3">
-                <div className="rounded-2xl rounded-tl-sm bg-white/[0.06] px-4 py-3 text-sm leading-6 text-white/70">
-                  {chatMessage.loading ? (
-                    <><span className="typing-dot" /> <span className="typing-dot delay-1" /> <span className="typing-dot delay-2" /></>
-                  ) : (
-                    formatAssistantMessage(chatMessage.content)
+          {messages.map((chatMessage) =>
+            chatMessage.role === 'user' ? (
+              <div
+                key={chatMessage.id}
+                className="ml-auto max-w-[84%] rounded-2xl rounded-tr-sm bg-[#FF9900] px-4 py-3 text-sm font-medium leading-6 text-[#0f1111] shadow-sm"
+              >
+                {chatMessage.content}
+              </div>
+            ) : (
+              <div key={chatMessage.id} className="flex gap-3">
+                <span className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[#FF9900]/20 text-[#FF9900]">
+                  <Sparkles size={13} />
+                </span>
+                <div className="max-w-[84%] space-y-3">
+                  <div className="rounded-2xl rounded-tl-sm border border-white/10 bg-[#232f3e] px-4 py-3 text-sm leading-6 text-white/90">
+                    {chatMessage.loading ? (
+                      <>
+                        <span className="typing-dot" /> <span className="typing-dot delay-1" /> <span className="typing-dot delay-2" />
+                      </>
+                    ) : (
+                      formatAssistantMessage(chatMessage.content)
+                    )}
+                  </div>
+                  {!chatMessage.loading && (
+                    <ProductResults
+                      products={chatMessage.products || []}
+                      onAskAbout={(product) => updateMessage(`Tell me more about "${product.name}" — what's special about it?`)}
+                    />
                   )}
                 </div>
-                {!chatMessage.loading && (
-                  <ProductResults
-                    products={chatMessage.products || []}
-                    onAskAbout={(product) => updateMessage(`Tell me more about "${product.name}" — what's special about it?`)}
-                  />
-                )}
               </div>
-            </div>
-          ))}
-          {error && <p className="ml-10 text-[10px] text-amber-200/60">{error}</p>}
+            )
+          )}
+          {error && <p className="ml-10 text-[10px] text-amber-200/80">{error}</p>}
         </div>
 
-        <form onSubmit={submit} className="border-t border-white/10 p-4">
-          <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/10 p-2 focus-within:border-violet/60">
-            <input value={message} onChange={(event) => updateMessage(event.target.value)} placeholder="Ask ShopPilot anything..." className="min-w-0 flex-1 bg-transparent px-3 text-sm text-white outline-none placeholder:text-white/30" />
-            <button type="button" onClick={toggleVoiceLanguage} aria-label={`Switch voice language to ${voiceLanguage === 'bn-BD' ? 'English' : 'Bangla'}`} className="rounded-lg px-1.5 py-1 text-[10px] font-semibold text-white/45 transition hover:bg-white/10 hover:text-mint">{voiceLanguage === 'bn-BD' ? 'BN' : 'EN'}</button>
-            <button type="button" aria-label="Use voice input" onClick={toggleVoice} className={`rounded-xl p-2.5 transition hover:bg-white/10 hover:text-mint ${listening ? 'bg-mint/20 text-mint' : 'text-white/45'}`}><Mic size={18} /></button>
+        <form onSubmit={submit} className="border-t border-[#232f3e] bg-[#131921] p-4">
+          <div className="flex items-center gap-2 rounded-xl border border-[#232f3e] bg-[#0f1111]/70 p-2 focus-within:border-[#FF9900]">
+            <input
+              value={message}
+              onChange={(event) => updateMessage(event.target.value)}
+              placeholder="Ask ShopPilot anything..."
+              className="min-w-0 flex-1 bg-transparent px-3 text-sm text-white outline-none placeholder:text-white/40"
+            />
+            <button
+              type="button"
+              onClick={toggleVoiceLanguage}
+              aria-label={`Switch voice language to ${voiceLanguage === 'bn-BD' ? 'English' : 'Bangla'}`}
+              className="rounded-lg px-2 py-1 text-[10px] font-bold text-white/60 transition hover:bg-white/10 hover:text-[#FF9900]"
+            >
+              {voiceLanguage === 'bn-BD' ? 'BN' : 'EN'}
+            </button>
+            <button
+              type="button"
+              aria-label="Use voice input"
+              onClick={toggleVoice}
+              className={`rounded-xl p-2.5 transition hover:bg-white/10 ${listening ? 'bg-[#FF9900]/25 text-[#FF9900]' : 'text-white/50 hover:text-[#FF9900]'}`}
+            >
+              <Mic size={18} />
+            </button>
             {speaking && (
-              <button type="button" aria-label="Stop speaking" onClick={stopSpeaking} className="rounded-xl bg-rose-300/15 p-2.5 text-rose-200 transition hover:bg-rose-300/25">
+              <button
+                type="button"
+                aria-label="Stop speaking"
+                onClick={stopSpeaking}
+                className="rounded-xl bg-rose-500/20 p-2.5 text-rose-300 transition hover:bg-rose-500/30"
+              >
                 <Square size={16} />
               </button>
             )}
-            <button type="submit" aria-label="Send message" className="grid h-10 w-10 place-items-center rounded-xl bg-mint text-ink transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50" disabled={loading}><ChevronRight size={19} /></button>
+            <button
+              type="submit"
+              aria-label="Send message"
+              className="grid h-10 w-10 place-items-center rounded-xl bg-[#FF9900] text-[#131921] font-bold transition hover:bg-[#ffd814] disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={loading}
+            >
+              <ChevronRight size={20} />
+            </button>
           </div>
-          <p className="mt-3 text-center text-[10px] text-white/25">ShopPilot checks live catalog and account tools. Always verify important order details.</p>
+          <p className="mt-3 text-center text-[10px] text-white/35">ShopPilot checks live catalog and account tools. Always verify important order details.</p>
         </form>
       </div>
     </div>
@@ -171,30 +216,31 @@ function LivePanel({ live, onExit }) {
 
   return (
     <div id="shoppilot-agent-live" className="relative mx-auto w-full max-w-xl scroll-mt-8">
-      <div className="absolute -inset-4 rounded-[2rem] bg-mint/10 blur-2xl" />
-      <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#101e31]/90 shadow-2xl backdrop-blur-xl">
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+      <div className="relative overflow-hidden rounded-2xl border border-[#232f3e] bg-[#131921] shadow-xl">
+        <div className="flex items-center justify-between border-b border-[#232f3e] bg-[#131921] px-5 py-4">
           <div className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-mint/20 text-mint"><Headphones size={18} /></span>
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#FF9900]/20 text-[#FF9900]">
+              <Radio size={18} className="animate-pulse" />
+            </span>
             <div>
               <div className="flex items-center gap-2">
-                <p className="text-sm font-semibold">Live voice · ShopPilot (v5)</p>
+                <p className="text-sm font-bold text-white">Live voice · ShopPilot</p>
                 <LiveStatusBadge status={status} />
               </div>
-              <p className="mt-1 text-[11px] text-mint">Native Gemini audio · hands-free</p>
+              <p className="mt-0.5 text-[11px] font-medium text-[#f3a847]">Native Gemini audio · hands-free</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onExit}
             aria-label="Exit voice conversation"
-            className="rounded-lg p-2 text-white/45 transition hover:bg-white/10 hover:text-white"
+            className="rounded-lg p-2 text-white/60 transition hover:bg-white/10 hover:text-white"
           >
-            <CircleHelp size={17} className="text-white/30" />
+            <CircleHelp size={17} className="text-white/35" />
           </button>
         </div>
 
-        <div className="space-y-4 p-5">
+        <div className="space-y-4 bg-[#131921] p-5">
           <div className="grid place-items-center py-6">
             <button
               type="button"
@@ -203,24 +249,24 @@ function LivePanel({ live, onExit }) {
               aria-label={isLive ? 'End voice conversation' : 'Start voice conversation'}
               className={`group relative grid h-28 w-28 place-items-center rounded-full transition disabled:cursor-not-allowed ${
                 isLive
-                  ? 'bg-rose-300/20 text-rose-200 hover:bg-rose-300/30'
-                  : 'bg-mint/20 text-mint hover:bg-mint/30'
+                  ? 'bg-rose-500/20 text-rose-300 hover:bg-rose-500/30'
+                  : 'bg-[#FF9900]/20 text-[#FF9900] hover:bg-[#FF9900]/30'
               }`}
             >
               {status === 'connecting' || status === 'thinking' ? (
-                <Loader2 size={36} className="animate-spin" />
+                <Loader2 size={36} className="animate-spin text-[#FF9900]" />
               ) : isLive ? (
                 <PhoneOff size={32} />
               ) : (
                 <Phone size={32} />
               )}
               <span
-                className={`absolute inset-0 rounded-full border border-mint/40 ${
+                className={`absolute inset-0 rounded-full border border-[#FF9900]/40 ${
                   isLive ? 'animate-ping' : ''
                 }`}
               />
             </button>
-            <p className="mt-4 text-xs text-white/55">
+            <p className="mt-4 text-xs font-medium text-white/70">
               {isLive
                 ? status === 'speaking'
                   ? 'ShopPilot is speaking…'
@@ -234,27 +280,27 @@ function LivePanel({ live, onExit }) {
           </div>
 
           {(inputTranscript || outputTranscript) && (
-            <div className="space-y-2 rounded-2xl bg-white/[0.04] p-4 text-sm leading-6 text-white/70">
+            <div className="space-y-2 rounded-2xl border border-white/10 bg-[#232f3e] p-4 text-sm leading-6 text-white/85">
               {inputTranscript && (
                 <p>
-                  <span className="mr-2 text-[10px] uppercase tracking-wider text-rose-200/70">You</span>
+                  <span className="mr-2 text-[10px] font-bold uppercase tracking-wider text-[#FF9900]">You</span>
                   {inputTranscript}
                 </p>
               )}
               {outputTranscript && (
                 <p>
-                  <span className="mr-2 text-[10px] uppercase tracking-wider text-mint">ShopPilot</span>
+                  <span className="mr-2 text-[10px] font-bold uppercase tracking-wider text-[#f3a847]">ShopPilot</span>
                   {outputTranscript}
                 </p>
               )}
             </div>
           )}
 
-          {error && <p className="text-[10px] text-amber-200/60">{error}</p>}
+          {error && <p className="text-[10px] text-amber-200/80">{error}</p>}
         </div>
 
-        <div className="border-t border-white/10 p-4">
-          <p className="text-center text-[10px] text-white/25">
+        <div className="border-t border-[#232f3e] bg-[#131921] p-4">
+          <p className="text-center text-[10px] text-white/35">
             Conversations stream over a single-use Gemini token. Sign in for cart, wishlist, and order tools.
           </p>
         </div>
@@ -264,10 +310,10 @@ function LivePanel({ live, onExit }) {
 }
 
 function LiveStatusBadge({ status }) {
-  const base = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium transition';
+  const base = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold transition';
   if (status === 'speaking') {
     return (
-      <span className={`${base} bg-mint/15 text-mint`}>
+      <span className={`${base} bg-[#FF9900]/20 text-[#FF9900]`}>
         <Volume2 size={12} />
         <span>Speaking</span>
       </span>
@@ -275,7 +321,7 @@ function LiveStatusBadge({ status }) {
   }
   if (status === 'listening' || status === 'ready') {
     return (
-      <span className={`${base} bg-mint/15 text-mint`}>
+      <span className={`${base} bg-[#FF9900]/20 text-[#FF9900]`}>
         <Mic size={12} />
         <span>Listening</span>
       </span>
@@ -283,7 +329,7 @@ function LiveStatusBadge({ status }) {
   }
   if (status === 'thinking' || status === 'connecting') {
     return (
-      <span className={`${base} bg-violet/15 text-violet-200`}>
+      <span className={`${base} bg-amber-400/20 text-amber-300`}>
         <Loader2 size={12} className="animate-spin" />
         <span>{status === 'connecting' ? 'Connecting' : 'Thinking'}</span>
       </span>
@@ -291,14 +337,14 @@ function LiveStatusBadge({ status }) {
   }
   if (status === 'error') {
     return (
-      <span className={`${base} bg-rose-300/20 text-rose-200`}>
+      <span className={`${base} bg-rose-500/20 text-rose-300`}>
         <span>Error</span>
       </span>
     );
   }
   return (
-    <span className={`${base} bg-white/[0.05] text-white/35`}>
-      <Headphones size={12} />
+    <span className={`${base} bg-white/10 text-white/60`}>
+      <Radio size={12} />
       <span>Idle</span>
     </span>
   );

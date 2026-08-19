@@ -6,44 +6,44 @@ export default function AdminInsightsPage() {
   const { dashboard, error } = useAdminDashboard();
 
   const inner = !dashboard && !error
-    ? <p className="rounded-xl bg-black/10 px-4 py-6 text-sm text-white/55">Loading insights…</p>
+    ? <p className="rounded-lg bg-white p-6 text-sm text-[#565959] shadow-sm">Loading insights…</p>
     : error
-      ? <p className="rounded-xl bg-rose-400/10 px-4 py-3 text-sm text-rose-200">{error}</p>
+      ? <p className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">{error}</p>
       : (
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+          <div className="rounded-xl border border-[#d5d9d9] bg-white p-6 shadow-sm">
             <div className="mb-5 flex items-center justify-between">
               <div>
-                <h2 className="font-display text-lg font-semibold">Top products</h2>
-                <p className="mt-1 text-xs text-white/40">Popularity and catalog performance</p>
+                <h2 className="font-display text-lg font-bold text-[#0f1111]">Top products</h2>
+                <p className="mt-0.5 text-xs text-[#565959]">Popularity and catalog performance</p>
               </div>
-              <Package size={18} className="text-white/30" />
+              <Package size={18} className="text-[#888c8c]" />
             </div>
             <div className="space-y-3">
               {dashboard.topProducts.map((product) => (
-                <div key={product._id} className="flex items-center justify-between rounded-xl bg-black/10 px-3 py-3">
+                <div key={product._id} className="flex items-center justify-between rounded-lg border border-[#eaeded] bg-[#f7f8f8] px-3.5 py-3">
                   <div>
-                    <p className="text-sm font-medium text-white/80">{product.name}</p>
-                    <p className="mt-1 text-[11px] text-white/35">{product.brand} · ★ {product.rating} · {product.reviewCount} reviews</p>
+                    <p className="text-sm font-semibold text-[#0f1111]">{product.name}</p>
+                    <p className="mt-0.5 text-[11px] text-[#565959]">{product.brand} · <span className="font-semibold text-[#e47911]">★ {product.rating}</span> · {product.reviewCount} reviews</p>
                   </div>
-                  <span className="text-sm font-semibold text-mint">৳{product.price.toLocaleString('en-BD')}</span>
+                  <span className="text-sm font-bold text-[#0f1111]">৳{product.price.toLocaleString('en-BD')}</span>
                 </div>
               ))}
             </div>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+          <div className="rounded-xl border border-[#d5d9d9] bg-white p-6 shadow-sm">
             <div className="mb-5 flex items-center justify-between">
               <div>
-                <h2 className="font-display text-lg font-semibold">Customer sentiment</h2>
-                <p className="mt-1 text-xs text-white/40">Review emotion signals</p>
+                <h2 className="font-display text-lg font-bold text-[#0f1111]">Customer sentiment</h2>
+                <p className="mt-0.5 text-xs text-[#565959]">Review emotion signals</p>
               </div>
-              <Users size={18} className="text-white/30" />
+              <Users size={18} className="text-[#888c8c]" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               {Object.entries(dashboard.sentiment).map(([key, value]) => (
-                <div key={key} className="rounded-xl bg-black/10 p-4">
-                  <p className="text-xs capitalize text-white/45">{key}</p>
-                  <p className="mt-1 font-display text-2xl font-semibold text-mint">{value}</p>
+                <div key={key} className="rounded-lg border border-[#eaeded] bg-[#f7f8f8] p-4">
+                  <p className="text-xs font-semibold capitalize text-[#565959]">{key}</p>
+                  <p className="mt-1 font-display text-2xl font-bold text-[#c45500]">{value}</p>
                 </div>
               ))}
             </div>

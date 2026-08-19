@@ -11,9 +11,9 @@ function formatPrice(value) {
 }
 
 function StockBadge({ stock }) {
-  if (stock > 5) return <span className="rounded-full bg-mint/15 px-2 py-[2px] text-[10px] font-medium text-mint">In stock</span>;
-  if (stock > 0) return <span className="rounded-full bg-amber-300/15 px-2 py-[2px] text-[10px] font-medium text-amber-200">Only {stock} left</span>;
-  return <span className="rounded-full bg-rose-300/15 px-2 py-[2px] text-[10px] font-medium text-rose-200">Out of stock</span>;
+  if (stock > 5) return <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-[2px] text-[10px] font-semibold text-emerald-700">In stock</span>;
+  if (stock > 0) return <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-[2px] text-[10px] font-semibold text-amber-700">Only {stock} left</span>;
+  return <span className="rounded-full border border-rose-200 bg-rose-50 px-2 py-[2px] text-[10px] font-semibold text-rose-700">Out of stock</span>;
 }
 
 function ProductPreviewModal({ product, onClose }) {
@@ -26,46 +26,46 @@ function ProductPreviewModal({ product, onClose }) {
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#0d1a2c] shadow-2xl"
+        className="relative w-full max-w-md overflow-hidden rounded-2xl border border-[#d5d9d9] bg-white text-[#0f1111] shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
         <button
           type="button"
           aria-label="Close preview"
           onClick={onClose}
-          className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-black/40 text-white/70 transition hover:bg-black/60 hover:text-white"
+          className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-black/10 text-[#0f1111] transition hover:bg-black/20"
         >
-          <X size={15} />
+          <X size={16} />
         </button>
-        <div className="flex h-56 items-center justify-center bg-gradient-to-br from-violet/25 to-mint/10">
+        <div className="flex h-56 items-center justify-center border-b border-[#eaeded] bg-[#f7f8f8] p-4">
           {product.images?.[0] ? (
-            <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
+            <img src={product.images[0]} alt={product.name} className="h-full w-full object-contain mix-blend-multiply" />
           ) : (
-            <PackageSearch size={56} className="text-white/30" />
+            <PackageSearch size={56} className="text-[#888c8c]" />
           )}
         </div>
         <div className="space-y-3 p-5">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-white/40">{product.brand || 'Catalog product'}</p>
-            <h3 className="mt-1 font-display text-xl font-semibold text-white">{product.name}</h3>
+            <p className="text-xs font-bold uppercase tracking-wider text-[#565959]">{product.brand || 'Catalog product'}</p>
+            <h3 className="mt-1 font-display text-xl font-bold text-[#0f1111]">{product.name}</h3>
           </div>
           <div className="flex items-center justify-between">
-            <span className="font-display text-2xl font-semibold text-mint">{formatPrice(product.price)}</span>
+            <span className="font-display text-2xl font-bold text-[#0f1111]">{formatPrice(product.price)}</span>
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1 text-xs text-white/60">
-                <Star size={12} className="fill-amber-300 text-amber-300" /> {Number(product.rating || 0).toFixed(1)}
-                <span className="text-white/30">({product.reviewCount || 0})</span>
+              <span className="flex items-center gap-1 text-xs font-medium text-[#565959]">
+                <Star size={13} className="fill-[#e47911] text-[#e47911]" /> {Number(product.rating || 0).toFixed(1)}
+                <span className="text-[#888c8c]">({product.reviewCount || 0})</span>
               </span>
               <StockBadge stock={product.stock} />
             </div>
           </div>
-          {product.description && <p className="text-sm leading-6 text-white/65">{product.description}</p>}
+          {product.description && <p className="text-sm leading-6 text-[#565959]">{product.description}</p>}
           {product.specs && Object.keys(product.specs).length > 0 && (
             <div className="grid grid-cols-2 gap-2">
               {Object.entries(product.specs).slice(0, 6).map(([key, value]) => (
-                <div key={key} className="rounded-lg bg-white/[0.04] px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-wider text-white/35">{key}</p>
-                  <p className="mt-1 text-xs text-white/75">{String(value)}</p>
+                <div key={key} className="rounded-lg bg-[#f0f2f2] px-3 py-2">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#565959]">{key}</p>
+                  <p className="mt-0.5 text-xs font-medium text-[#0f1111]">{String(value)}</p>
                 </div>
               ))}
             </div>
@@ -128,58 +128,58 @@ export default function ProductCard({ product, onAskAbout }) {
     <>
       <article
         onClick={handleAskAbout}
-        className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] text-left transition hover:-translate-y-1 hover:border-mint/30"
+        className="group relative cursor-pointer overflow-hidden rounded-xl border border-[#d5d9d9] bg-white text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#FF9900] hover:shadow-md"
       >
-        <div className="relative flex h-32 items-center justify-center bg-gradient-to-br from-violet/20 to-mint/10">
+        <div className="relative flex h-32 items-center justify-center border-b border-[#eaeded] bg-[#f7f8f8] p-2">
           <img
             src={image}
             alt={product.name}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain mix-blend-multiply"
             onError={(event) => {
               event.currentTarget.src = PLACEHOLDER;
             }}
           />
           {product.discountPercentage > 0 && (
-            <span className="absolute left-2 top-2 rounded-full bg-rose-300/90 px-2 py-[2px] text-[10px] font-semibold text-ink">
+            <span className="absolute left-2 top-2 rounded-md bg-[#B12704] px-1.5 py-[2px] text-[10px] font-bold text-white">
               -{product.discountPercentage}%
             </span>
           )}
-          <div className="absolute inset-x-0 bottom-0 translate-y-2 bg-gradient-to-t from-black/40 to-transparent px-3 pb-2 pt-3 opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100">
-            <p className="text-[10px] text-white/80">Click to ask ShopPilot about this</p>
+          <div className="absolute inset-x-0 bottom-0 translate-y-2 bg-gradient-to-t from-black/50 to-transparent px-3 pb-1.5 pt-3 opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100">
+            <p className="text-[10px] font-medium text-white">Click to ask ShopPilot about this</p>
           </div>
         </div>
         <div className="space-y-2 p-3">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-white/90">{product.name}</p>
-              <p className="mt-[2px] text-[10px] text-white/40">{product.brand || 'Catalog'}</p>
+              <p className="truncate text-sm font-semibold text-[#0f1111] group-hover:text-[#007185]">{product.name}</p>
+              <p className="mt-[1px] text-[10px] font-medium text-[#565959]">{product.brand || 'Catalog'}</p>
             </div>
-            <span className="shrink-0 font-display text-sm font-semibold text-mint">{formatPrice(product.price)}</span>
+            <span className="shrink-0 font-display text-sm font-bold text-[#0f1111]">{formatPrice(product.price)}</span>
           </div>
-          <div className="flex items-center gap-2 text-[10px] text-white/50">
-            <span className="flex items-center gap-1">
-              <Star size={10} className="fill-amber-300 text-amber-300" /> {Number(product.rating || 0).toFixed(1)}
+          <div className="flex items-center gap-2 text-[10px] text-[#565959]">
+            <span className="flex items-center gap-1 font-semibold text-[#e47911]">
+              <Star size={11} className="fill-[#e47911] text-[#e47911]" /> {Number(product.rating || 0).toFixed(1)}
             </span>
-            <span className="text-white/20">·</span>
+            <span className="text-[#888c8c]">·</span>
             <span>{product.reviewCount || 0} reviews</span>
             <StockBadge stock={product.stock} />
           </div>
           {product.description && (
-            <p className="line-clamp-2 text-[11px] leading-5 text-white/45">{product.description}</p>
+            <p className="line-clamp-2 text-[11px] leading-5 text-[#565959]">{product.description}</p>
           )}
-          {feedback && <p className="text-[10px] text-mint">{feedback}</p>}
+          {feedback && <p className="text-[10px] font-bold text-[#c45500]">{feedback}</p>}
           <div className="flex items-center gap-1.5 pt-1">
             <button
               type="button"
               onClick={handleViewDetails}
-              className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-white/10 bg-white/[0.06] px-2 py-1.5 text-[11px] font-medium text-white/75 transition hover:bg-white/[0.12] hover:text-white"
+              className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-[#d5d9d9] bg-[#f0f2f2] px-2 py-1.5 text-[11px] font-bold text-[#0f1111] transition hover:bg-[#e3e6e6]"
             >
               <Eye size={12} /> View
             </button>
             <button
               type="button"
               onClick={handleWishlist}
-              className="grid h-7 w-7 place-items-center rounded-lg border border-white/10 bg-white/[0.06] text-white/65 transition hover:bg-white/[0.12] hover:text-rose-200"
+              className="grid h-7 w-7 place-items-center rounded-lg border border-[#d5d9d9] bg-[#f0f2f2] text-[#0f1111] transition hover:bg-[#e3e6e6] hover:text-[#B12704]"
               aria-label="Add to wishlist"
             >
               <Heart size={12} />
@@ -188,7 +188,7 @@ export default function ProductCard({ product, onAskAbout }) {
               type="button"
               onClick={handleAddToCart}
               disabled={adding || product.stock < 1}
-              className="flex flex-[1.4] items-center justify-center gap-1 rounded-lg bg-mint px-2 py-1.5 text-[11px] font-semibold text-ink transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex flex-[1.4] items-center justify-center gap-1 rounded-full border border-[#fcd200] bg-[#ffd814] px-2 py-1.5 text-[11px] font-bold text-[#0f1111] shadow-sm transition hover:bg-[#f7ca00] active:bg-[#f0b800] disabled:cursor-not-allowed disabled:opacity-50"
             >
               <ShoppingCart size={12} />
               {adding ? 'Adding…' : product.stock < 1 ? 'Out of stock' : 'Add to cart'}

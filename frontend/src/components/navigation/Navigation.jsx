@@ -9,10 +9,7 @@ import {
   ShoppingCart,
   UserRound,
   X,
-  Moon,
-  Sun,
 } from 'lucide-react';
-import { useTheme } from '../../shared/theme/ThemeProvider.jsx';
 
 const navigationItems = [
   { to: '/', label: 'Assistant', icon: Bot },
@@ -24,35 +21,31 @@ const navigationItems = [
 
 export default function Navigation({ open, onToggle }) {
   const { user, signOut } = useAuth();
-  const { isLight, toggleTheme } = useTheme();
 
   return (
     <>
-      <nav className={`${open ? 'flex' : 'hidden'} absolute left-5 right-5 top-[76px] flex-col gap-2 rounded-2xl border border-white/10 bg-[#0d1a2c] p-3 md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0`}>
+      <nav className={`${open ? 'flex' : 'hidden'} absolute left-5 right-5 top-[68px] z-50 flex-col gap-1.5 rounded-xl border border-[#232f3e] bg-[#131921] p-3 shadow-xl md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0 md:shadow-none`}>
         {navigationItems
           .filter(({ to }) => to !== '/admin' || user?.role === 'admin')
           .map(({ to, label, icon: Icon }) => (
-            <Link key={to} to={to} className="flex items-center gap-2 rounded-xl px-4 py-2 text-sm text-white/55 transition hover:bg-white/10 hover:text-white">
+            <Link key={to} to={to} className="flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-[#FF9900]">
               <Icon size={16} />
               {label}
             </Link>
           ))}
       </nav>
 
-      <div className="flex items-center gap-3">
-        <button onClick={toggleTheme} aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'} title={isLight ? 'Dark mode' : 'White mode'} className="rounded-xl border border-white/10 p-2 text-white/60 transition hover:bg-white/10 hover:text-white">
-          {isLight ? <Moon size={16} /> : <Sun size={16} />}
-        </button>
+      <div className="flex items-center gap-2.5">
         {user ? (
-          <button onClick={signOut} title="Sign out" className="hidden items-center gap-2 rounded-full border border-mint/20 bg-mint/10 px-4 py-2 text-sm text-mint transition hover:border-mint/40 sm:flex">
+          <button onClick={signOut} title="Sign out" className="hidden items-center gap-2 rounded-lg border border-[#FF9900]/40 bg-[#FF9900]/15 px-3.5 py-1.5 text-sm font-medium text-[#FF9900] transition hover:bg-[#FF9900]/25 sm:flex">
             <UserRound size={16} /> {user.name || user.email}
           </button>
         ) : (
-          <Link to="/login?next=/" className="hidden items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/70 transition hover:border-white/25 hover:text-white sm:flex">
+          <Link to="/login?next=/" className="hidden items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-3.5 py-1.5 text-sm font-medium text-white transition hover:border-[#FF9900] hover:text-[#FF9900] sm:flex">
             <UserRound size={16} /> Sign in
           </Link>
         )}
-        <button aria-label="Toggle navigation" onClick={onToggle} className="rounded-xl border border-white/10 p-2 md:hidden">
+        <button aria-label="Toggle navigation" onClick={onToggle} className="rounded-lg border border-white/15 p-2 text-white transition hover:text-[#FF9900] md:hidden">
           {open ? <X size={19} /> : <Menu size={19} />}
         </button>
       </div>

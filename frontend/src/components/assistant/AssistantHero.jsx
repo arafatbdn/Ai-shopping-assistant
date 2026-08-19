@@ -4,20 +4,24 @@ import { assistantSuggestions } from '../../shared/constants/electronics.js';
 export default function AssistantHero({ onPromptSelect }) {
   return (
     <div className="max-w-2xl">
-      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-mint/25 bg-mint/10 px-3 py-1.5 text-xs font-medium text-mint">
-        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-mint" /> Your personal shopping employee
+      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#FF9900]/30 bg-[#FF9900]/10 px-3.5 py-1.5 text-xs font-semibold text-[#c45500]">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF9900]" /> Your personal shopping employee
       </div>
-      <h1 className="font-display text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-white sm:text-7xl">
-        Shopping that feels <span className="text-mint">understood.</span>
+      <h1 className="font-display text-5xl font-bold leading-[1.04] tracking-tight text-[#0f1111] sm:text-7xl">
+        Shopping that feels <span className="text-[#e47911]">understood.</span>
       </h1>
-      <p className="mt-7 max-w-xl text-lg leading-8 text-white/55">
-        <span className="font-semibold text-white">AgentShop AI</span> &middot; ShopPilot learns what matters to you, finds the right products, and gets things done — from discovery to delivery.
+      <p className="mt-6 max-w-xl text-base leading-7 text-[#565959] sm:text-lg">
+        <strong className="font-semibold text-[#0f1111]">AgentShop AI</strong> &middot; ShopPilot learns what matters to you, finds the right products, and gets things done — from discovery to delivery.
       </p>
-      <div className="mt-10 flex flex-wrap gap-2">
+      <div className="mt-8 flex flex-wrap gap-2.5">
         {assistantSuggestions.map((suggestion) => (
-          <button key={suggestion} onClick={() => onPromptSelect(suggestion)} className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-left text-xs text-white/65 transition hover:border-violet/60 hover:bg-violet/10 hover:text-white">
+          <button
+            key={suggestion}
+            onClick={() => onPromptSelect(suggestion)}
+            className="group flex items-center gap-2 rounded-full border border-[#d5d9d9] bg-white px-4 py-2 text-left text-xs font-medium text-[#0f1111] shadow-sm transition hover:border-[#FF9900] hover:bg-[#fffbf2] hover:text-[#0f1111]"
+          >
             {suggestion}
-            <ArrowUpRight size={13} className="text-white/30 transition group-hover:text-mint" />
+            <ArrowUpRight size={13} className="text-[#888c8c] transition group-hover:text-[#e47911]" />
           </button>
         ))}
       </div>

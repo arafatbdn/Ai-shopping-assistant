@@ -41,16 +41,117 @@ export default function CartPage() {
     }
   };
 
-  if (!user) return <section className="mx-auto flex min-h-[calc(100vh-81px)] max-w-xl flex-col items-center justify-center px-5 text-center"><ShoppingCart size={42} className="mb-4 text-mint" /><h1 className="font-display text-3xl font-semibold">Sign in to view your cart</h1><p className="mt-3 text-sm text-white/45">ShopPilot keeps your cart securely linked to your AgentShop AI account.</p><Link to="/login?next=/cart" className="mt-6 rounded-xl bg-mint px-5 py-3 text-sm font-semibold text-ink">Sign in <ArrowRight size={15} className="ml-1 inline" /></Link></section>;
+  if (!user) {
+    return (
+      <section className="mx-auto flex min-h-[calc(100vh-81px)] max-w-xl flex-col items-center justify-center px-5 text-center">
+        <ShoppingCart size={48} className="mb-4 text-[#FF9900]" />
+        <h1 className="font-display text-3xl font-bold text-[#0f1111]">Sign in to view your cart</h1>
+        <p className="mt-3 text-sm text-[#565959]">ShopPilot keeps your cart securely linked to your AgentShop AI account.</p>
+        <Link
+          to="/login?next=/cart"
+          className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#fcd200] bg-[#ffd814] px-6 py-3 text-sm font-bold text-[#0f1111] shadow-sm transition hover:bg-[#f7ca00]"
+        >
+          Sign in <ArrowRight size={16} />
+        </Link>
+      </section>
+    );
+  }
 
   return (
-    <section className="mx-auto min-h-[calc(100vh-81px)] max-w-5xl px-5 py-12 lg:px-8">
-      <div className="mb-8"><p className="text-xs font-medium uppercase tracking-[0.22em] text-mint">Your shopping bag</p><h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Cart</h1><p className="mt-2 text-sm text-white/45">Review products ShopPilot selected for you.</p></div>
-      {error && <p className="mb-4 rounded-xl bg-rose-400/10 px-4 py-3 text-sm text-rose-100">{error}</p>}
-      {loading ? <p className="text-sm text-white/50">Loading cart…</p> : !cart.items?.length ? <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-10 text-center"><Package size={36} className="mx-auto mb-4 text-white/30" /><p className="text-white/65">Your cart is empty.</p><Link to="/" className="mt-5 inline-block rounded-xl bg-mint px-5 py-3 text-sm font-semibold text-ink">Explore products</Link></div> : <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-3">{cart.items.map((item) => <article key={item.product?._id} className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4"><div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-xl bg-white/[0.05]">{item.product?.images?.[0] ? <img src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-cover" /> : <Package size={25} className="text-white/25" />}</div><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{item.product?.name}</p><p className="mt-1 text-xs text-white/40">{item.product?.brand} · ৳{item.product?.price?.toLocaleString('en-BD')}</p><div className="mt-3 flex items-center gap-2"><button onClick={() => changeQuantity(item.product?._id, -1)} className="rounded-lg border border-white/10 p-1.5 text-white/60 hover:text-white"><Minus size={13} /></button><span className="min-w-6 text-center text-xs">{item.quantity}</span><button onClick={() => changeQuantity(item.product?._id, 1)} className="rounded-lg border border-white/10 p-1.5 text-white/60 hover:text-white"><Plus size={13} /></button></div></div><div className="text-right"><p className="text-sm font-semibold text-mint">৳{((item.product?.price || 0) * item.quantity).toLocaleString('en-BD')}</p><button onClick={() => removeCartItem(item.product?._id).then(loadCart)} className="mt-3 text-white/30 transition hover:text-rose-200" aria-label="Remove from cart"><Trash2 size={16} /></button></div></article>)}</div>
-        <aside className="h-fit rounded-2xl border border-white/10 bg-white/[0.04] p-5"><h2 className="font-display text-lg font-semibold">Order summary</h2><div className="mt-5 flex justify-between text-sm text-white/55"><span>Subtotal</span><span>৳{subtotal.toLocaleString('en-BD')}</span></div><div className="mt-3 flex justify-between border-t border-white/10 pt-4 font-semibold"><span>Total</span><span className="text-mint">৳{subtotal.toLocaleString('en-BD')}</span></div><button disabled className="mt-6 w-full rounded-xl bg-mint px-4 py-3 text-sm font-semibold text-ink opacity-60">Checkout coming next</button></aside>
-      </div>}
+    <section className="mx-auto min-h-[calc(100vh-81px)] max-w-5xl px-5 py-10 lg:px-8">
+      <div className="mb-8">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#c45500]">Your shopping bag</p>
+        <h1 className="mt-1 font-display text-4xl font-bold tracking-tight text-[#0f1111]">Cart</h1>
+        <p className="mt-1.5 text-sm text-[#565959]">Review products ShopPilot selected for you.</p>
+      </div>
+
+      {error && <p className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">{error}</p>}
+
+      {loading ? (
+        <p className="text-sm text-[#565959]">Loading cart…</p>
+      ) : !cart.items?.length ? (
+        <div className="rounded-2xl border border-[#d5d9d9] bg-white p-12 text-center shadow-sm">
+          <Package size={40} className="mx-auto mb-4 text-[#888c8c]" />
+          <p className="text-base font-semibold text-[#0f1111]">Your cart is empty.</p>
+          <Link
+            to="/"
+            className="mt-5 inline-block rounded-full border border-[#fcd200] bg-[#ffd814] px-6 py-2.5 text-sm font-bold text-[#0f1111] shadow-sm transition hover:bg-[#f7ca00]"
+          >
+            Explore products
+          </Link>
+        </div>
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+          <div className="space-y-3">
+            {cart.items.map((item) => (
+              <article
+                key={item.product?._id}
+                className="flex items-center gap-4 rounded-xl border border-[#d5d9d9] bg-white p-4 shadow-sm"
+              >
+                <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#eaeded] bg-[#f7f8f8] p-1">
+                  {item.product?.images?.[0] ? (
+                    <img src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-contain mix-blend-multiply" />
+                  ) : (
+                    <Package size={25} className="text-[#888c8c]" />
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-[#0f1111] hover:text-[#007185]">{item.product?.name}</p>
+                  <p className="mt-1 text-xs text-[#565959]">
+                    {item.product?.brand} · ৳{item.product?.price?.toLocaleString('en-BD')}
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <button
+                      onClick={() => changeQuantity(item.product?._id, -1)}
+                      className="rounded-md border border-[#d5d9d9] bg-[#f0f2f2] p-1.5 text-[#0f1111] transition hover:bg-[#e3e6e6]"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus size={13} />
+                    </button>
+                    <span className="min-w-6 text-center text-xs font-bold text-[#0f1111]">{item.quantity}</span>
+                    <button
+                      onClick={() => changeQuantity(item.product?._id, 1)}
+                      className="rounded-md border border-[#d5d9d9] bg-[#f0f2f2] p-1.5 text-[#0f1111] transition hover:bg-[#e3e6e6]"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus size={13} />
+                    </button>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-base font-bold text-[#0f1111]">
+                    ৳{((item.product?.price || 0) * item.quantity).toLocaleString('en-BD')}
+                  </p>
+                  <button
+                    onClick={() => removeCartItem(item.product?._id).then(loadCart)}
+                    className="mt-3 text-[#888c8c] transition hover:text-[#B12704]"
+                    aria-label="Remove from cart"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+          <aside className="h-fit rounded-xl border border-[#d5d9d9] bg-white p-5 shadow-sm">
+            <h2 className="font-display text-lg font-bold text-[#0f1111]">Order summary</h2>
+            <div className="mt-4 flex justify-between text-sm text-[#565959]">
+              <span>Subtotal</span>
+              <span className="font-medium text-[#0f1111]">৳{subtotal.toLocaleString('en-BD')}</span>
+            </div>
+            <div className="mt-3 flex justify-between border-t border-[#eaeded] pt-3 font-semibold">
+              <span className="text-[#0f1111]">Total</span>
+              <span className="text-lg font-bold text-[#B12704]">৳{subtotal.toLocaleString('en-BD')}</span>
+            </div>
+            <button
+              disabled
+              className="mt-5 w-full rounded-full border border-[#fcd200] bg-[#ffd814] px-4 py-2.5 text-sm font-bold text-[#0f1111] opacity-60 shadow-sm"
+            >
+              Checkout coming next
+            </button>
+          </aside>
+        </div>
+      )}
     </section>
   );
 }

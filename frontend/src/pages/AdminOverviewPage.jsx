@@ -17,7 +17,7 @@ export default function AdminOverviewPage() {
       title="Admin intelligence"
       subtitle="Pick a section from the sidebar or jump in below."
       badge={
-        <div className="flex items-center gap-2 rounded-full border border-mint/20 bg-mint/10 px-3 py-2 text-xs text-mint">
+        <div className="flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800">
           <CheckCircle2 size={14} /> System healthy
         </div>
       }
@@ -27,16 +27,18 @@ export default function AdminOverviewPage() {
           <Link
             key={to}
             to={to}
-            className="group flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:border-mint/40 hover:bg-white/[0.06]"
+            className="group flex flex-col gap-3 rounded-xl border border-[#d5d9d9] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#FF9900] hover:shadow-md"
           >
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-mint/10 text-mint transition group-hover:scale-110">
-              <Icon size={17} />
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#f0f2f2] text-[#131921] transition group-hover:bg-[#fff8ee] group-hover:text-[#e47911]">
+              <Icon size={18} />
             </span>
             <div>
-              <h3 className="font-display text-base font-semibold">{title}</h3>
-              <p className="mt-1 text-xs text-white/45">{description}</p>
+              <h3 className="font-display text-base font-bold text-[#0f1111]">{title}</h3>
+              <p className="mt-1 text-xs text-[#565959]">{description}</p>
             </div>
-            <span className="mt-auto text-xs font-medium text-mint opacity-0 transition group-hover:opacity-100">Open →</span>
+            <span className="mt-auto text-xs font-bold text-[#007185] opacity-0 transition group-hover:opacity-100 group-hover:text-[#c45500]">
+              Open →
+            </span>
           </Link>
         ))}
       </div>

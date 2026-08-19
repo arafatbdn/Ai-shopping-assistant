@@ -20,15 +20,20 @@ export default function AdminNotificationsPage() {
       title="Notification generator"
       subtitle="Compose a customer-ready shipping update using ShopPilot."
     >
-      <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+      <div className="rounded-xl border border-[#d5d9d9] bg-white p-6 shadow-sm">
         <div className="flex items-center gap-2">
-          <Bell size={17} className="text-mint" />
-          <h2 className="font-display text-lg font-semibold">Compose update</h2>
+          <Bell size={18} className="text-[#FF9900]" />
+          <h2 className="font-display text-lg font-bold text-[#0f1111]">Compose update</h2>
         </div>
-        <p className="mt-2 text-sm text-white/45">Generate a customer-ready shipping update using ShopPilot.</p>
-        <button onClick={createNotification} className="mt-4 rounded-xl border border-mint/30 bg-mint/10 px-4 py-2.5 text-sm font-semibold text-mint transition hover:bg-mint/20">Generate notification</button>
-        {notification && <p className="mt-4 rounded-xl bg-black/10 p-4 text-sm leading-6 text-white/70">{notification.message}</p>}
-        {error && <p className="mt-4 rounded-xl bg-rose-400/10 px-3 py-2 text-xs text-rose-200">{error}</p>}
+        <p className="mt-1 text-sm text-[#565959]">Generate a customer-ready shipping update using ShopPilot.</p>
+        <button
+          onClick={createNotification}
+          className="mt-4 rounded-full border border-[#fcd200] bg-[#ffd814] px-5 py-2 text-sm font-bold text-[#0f1111] shadow-sm transition hover:bg-[#f7ca00]"
+        >
+          Generate notification
+        </button>
+        {notification && <p className="mt-4 rounded-lg border border-[#eaeded] bg-[#f7f8f8] p-4 text-sm leading-6 text-[#0f1111]">{notification.message}</p>}
+        {error && <p className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs text-rose-800">{error}</p>}
       </div>
     </AdminLayout>
   );

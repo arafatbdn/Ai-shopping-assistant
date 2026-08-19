@@ -9,6 +9,8 @@ export function validId(value) {
 }
 
 export function productSummary(product, extra = {}) {
+  const firstImage = product?.images?.length ? product.images[0] : (product?.image || null);
+  const safeImage = (typeof firstImage === 'string' && !firstImage.startsWith('data:')) ? firstImage : null;
   return {
     id: String(product?._id || product?.id),
     name: product?.name || '',
@@ -22,7 +24,7 @@ export function productSummary(product, extra = {}) {
     description: product?.description || '',
     category: product?.category?.name || product?.category || '',
     specs: product?.specs instanceof Map ? Object.fromEntries(product.specs) : product?.specs || {},
-    images: product?.images?.length ? [product.images[0]] : [],
+    ...(safeImage ? { image: safeImage } : {}),
     ...extra,
   };
 }

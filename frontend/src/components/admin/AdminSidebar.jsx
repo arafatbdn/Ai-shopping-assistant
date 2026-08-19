@@ -13,9 +13,9 @@ export const adminNavItems = [
 
 export default function AdminSidebar() {
   return (
-    <aside className="hidden lg:block lg:sticky lg:top-24 lg:h-max lg:w-64 lg:flex-shrink-0">
-      <nav className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
-        <p className="px-3 pb-2 pt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/40">
+    <aside className="hidden lg:sticky lg:top-24 lg:block lg:h-max lg:w-64 lg:flex-shrink-0">
+      <nav className="rounded-xl border border-[#d5d9d9] bg-white p-3 shadow-sm">
+        <p className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#565959]">
           Admin sections
         </p>
         <ul className="space-y-1">
@@ -24,10 +24,10 @@ export default function AdminSidebar() {
               <NavLink
                 to={to}
                 className={({ isActive }) =>
-                  `flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left text-sm transition ${
+                  `flex w-full items-center gap-3 rounded-lg border px-3 py-2 text-left text-sm font-medium transition ${
                     isActive
-                      ? 'border-mint/30 bg-mint/10 text-mint'
-                      : 'border-transparent text-white/60 hover:bg-white/[0.06] hover:text-white'
+                      ? 'border-[#FF9900]/50 bg-[#fff8ee] text-[#c45500] font-bold'
+                      : 'border-transparent text-[#565959] hover:bg-[#f0f2f2] hover:text-[#0f1111]'
                   }`
                 }
               >

@@ -10,10 +10,6 @@ import { executeShoppingTool } from '../agent/tools/tool-registry.js';
  * Response: { responses: [{ id, name, response }, ...] }
  */
 export async function executeAgentTools(request, response) {
-  if (!request.user) {
-    return response.status(401).json({ message: 'Sign in to perform shopping actions' });
-  }
-
   const calls = Array.isArray(request.body?.calls) ? request.body.calls : null;
   if (!calls) {
     return response.status(400).json({ message: 'calls array is required' });
@@ -24,18 +20,29 @@ export async function executeAgentTools(request, response) {
     const id = String(call?.id || '').trim();
     const name = String(call?.name || '').trim();
     if (!id || !name) {
-      responses.push({ id, name, response: { ok: false, message: 'Missing tool call id or name' } });
+      responses.push({ id, name, response: { name, content: { ok: false, message: 'Missing tool call id or name' } } });
       continue;
     }
     try {
-      const result = await executeShoppingTool(name, call.args || {}, { user: request.user });
-      responses.push({ id, name, response: result });
+      const result = await executeShoppingTool(name, call.args || {}, { user: request.user || null });
+      responses.push({
+        id,
+        name,
+        response: {
+          output: result,
+          ...result,
+        },
+      });
     } catch (error) {
       console.error(`Live tool ${name} failed: ${error.message}`);
       responses.push({
         id,
         name,
-        response: { ok: false, message: error.message || 'Tool execution failed' },
+        response: {
+          output: { ok: false, message: error.message || 'Tool execution failed' },
+          ok: false,
+          message: error.message || 'Tool execution failed',
+        },
       });
     }
   }

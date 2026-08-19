@@ -106,6 +106,7 @@ export default function useLiveConversation() {
   const handleToolCalls = useCallback(async (functionCalls) => {
     if (!Array.isArray(functionCalls) || functionCalls.length === 0) return;
     setStatus('thinking');
+    setOutputTranscript(''); // Clear pre-tool internal reasoning
     try {
       const calls = functionCalls.map((call) => ({ id: call.id, name: call.name, args: call.args || {} }));
       const authToken = localStorage.getItem('nova_access_token');
@@ -150,8 +151,6 @@ export default function useLiveConversation() {
       setupCompleteRef.current = true;
       setStatus('ready');
       log('setup complete');
-      // Start the mic capture now that the server has acknowledged setup;
-      // audio frames sent before setupComplete are discarded by Gemini.
       const micPromise = startMicCaptureRef.current?.();
       if (micPromise && micPromise.catch) {
         micPromise.catch((err) => {
@@ -180,7 +179,13 @@ export default function useLiveConversation() {
             queueAudio(part.inlineData.data);
             hasAudio = true;
           } else if (part.text) {
-            setOutputTranscript((prev) => prev + part.text);
+            const isMonologue = part.text.includes("I've determined") || part.text.includes("Initiating") || part.text.includes("formulating");
+            if (!isMonologue) {
+              const cleaned = part.text.replace(/\*\*[^*]+\*\*\n*/g, '').trim();
+              if (cleaned) {
+                setOutputTranscript((prev) => (prev ? `${prev} ${cleaned}` : cleaned));
+              }
+            }
           }
         }
         if (hasAudio) setStatus('speaking');
@@ -189,7 +194,12 @@ export default function useLiveConversation() {
         setInputTranscript((prev) => prev + serverContent.inputTranscription.text);
       }
       if (serverContent.outputTranscription?.text) {
-        setOutputTranscript((prev) => prev + serverContent.outputTranscription.text);
+        setOutputTranscript((prev) => {
+          if (prev.includes("I've determined") || prev.includes("Initiating") || prev.includes("formulating")) {
+            return serverContent.outputTranscription.text;
+          }
+          return prev + serverContent.outputTranscription.text;
+        });
       }
       if (serverContent.turnComplete) {
         setStatus('ready');

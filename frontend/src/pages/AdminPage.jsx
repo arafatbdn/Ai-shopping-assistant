@@ -6,14 +6,14 @@ import ProductUploadForm from '../components/admin/ProductUploadForm.jsx';
 import CatalogManager from '../components/admin/CatalogManager.jsx';
 import AdminSidebar, { adminSections } from '../components/admin/AdminSidebar.jsx';
 
-function Metric({ label, value, icon: Icon, accent = 'text-mint' }) {
+function Metric({ label, value, icon: Icon, accent = 'text-[#e47911]' }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
-      <div className={`mb-4 grid h-9 w-9 place-items-center rounded-xl bg-white/[0.06] ${accent}`}>
-        <Icon size={17} />
+    <div className="rounded-xl border border-[#d5d9d9] bg-white p-5 shadow-sm">
+      <div className={`mb-3 grid h-10 w-10 place-items-center rounded-lg bg-[#f0f2f2] ${accent}`}>
+        <Icon size={18} />
       </div>
-      <p className="text-xs text-white/40">{label}</p>
-      <p className="mt-1 font-display text-2xl font-semibold">{value}</p>
+      <p className="text-xs font-medium text-[#565959]">{label}</p>
+      <p className="mt-1 font-display text-2xl font-bold text-[#0f1111]">{value}</p>
     </div>
   );
 }
@@ -87,27 +87,27 @@ export default function AdminPage() {
   };
 
   if (!dashboard && !error) {
-    return <section className="mx-auto flex min-h-[calc(100vh-81px)] items-center justify-center text-sm text-white/50">Loading admin intelligence…</section>;
+    return <section className="mx-auto flex min-h-[calc(100vh-81px)] items-center justify-center text-sm text-[#565959]">Loading admin intelligence…</section>;
   }
   if (error && !dashboard) {
     return (
       <section className="mx-auto flex min-h-[calc(100vh-81px)] max-w-xl flex-col items-center justify-center px-5 text-center">
-        <AlertTriangle className="mb-4 text-amber-300" />
-        <p className="text-white/70">{error}</p>
+        <AlertTriangle className="mb-4 text-[#c45500]" />
+        <p className="text-sm text-rose-800">{error}</p>
       </section>
     );
   }
 
   const { summary, topProducts, lowStock, sentiment } = dashboard;
   return (
-    <section className="mx-auto max-w-7xl px-5 py-10 lg:px-8 lg:py-14">
-      <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <section className="mx-auto max-w-7xl px-5 py-8 lg:px-8 lg:py-10">
+      <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-mint">AgentShop AI operations</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Admin intelligence</h1>
-          <p className="mt-3 text-sm text-white/45">A live view of sales, stock, sentiment, and risk.</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#c45500]">AgentShop AI operations</p>
+          <h1 className="mt-1 font-display text-3xl font-bold tracking-tight text-[#0f1111] sm:text-4xl">Admin intelligence</h1>
+          <p className="mt-1.5 text-sm text-[#565959]">A live view of sales, stock, sentiment, and risk.</p>
         </div>
-        <div className="flex items-center gap-2 rounded-full border border-mint/20 bg-mint/10 px-3 py-2 text-xs text-mint">
+        <div className="flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800">
           <CheckCircle2 size={14} /> System healthy
         </div>
       </div>
@@ -128,48 +128,48 @@ export default function AdminPage() {
 
           <Section id="metrics" className="mt-6">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Metric label="Total revenue" value={`৳${summary.revenue.toLocaleString('en-BD')}`} icon={DollarSign} />
-              <Metric label="Orders" value={summary.totalOrders} icon={Package} accent="text-violet-200" />
-              <Metric label="Customers" value={summary.customerCount} icon={Users} accent="text-cyan-200" />
-              <Metric label="Average order" value={`৳${summary.averageOrderValue.toLocaleString('en-BD')}`} icon={DollarSign} accent="text-orange-200" />
+              <Metric label="Total revenue" value={`৳${summary.revenue.toLocaleString('en-BD')}`} icon={DollarSign} accent="text-[#c45500]" />
+              <Metric label="Orders" value={summary.totalOrders} icon={Package} accent="text-[#007185]" />
+              <Metric label="Customers" value={summary.customerCount} icon={Users} accent="text-[#131921]" />
+              <Metric label="Average order" value={`৳${summary.averageOrderValue.toLocaleString('en-BD')}`} icon={DollarSign} accent="text-[#e47911]" />
             </div>
           </Section>
 
           <Section id="top-sentiment" className="mt-6">
             <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+              <div className="rounded-xl border border-[#d5d9d9] bg-white p-6 shadow-sm">
                 <div className="mb-5 flex items-center justify-between">
                   <div>
-                    <h2 className="font-display text-lg font-semibold">Top products</h2>
-                    <p className="mt-1 text-xs text-white/40">Popularity and catalog performance</p>
+                    <h2 className="font-display text-lg font-bold text-[#0f1111]">Top products</h2>
+                    <p className="mt-0.5 text-xs text-[#565959]">Popularity and catalog performance</p>
                   </div>
-                  <Package size={18} className="text-white/30" />
+                  <Package size={18} className="text-[#888c8c]" />
                 </div>
                 <div className="space-y-3">
                   {topProducts.map((product) => (
-                    <div key={product._id} className="flex items-center justify-between rounded-xl bg-black/10 px-3 py-3">
+                    <div key={product._id} className="flex items-center justify-between rounded-lg border border-[#eaeded] bg-[#f7f8f8] px-3.5 py-3">
                       <div>
-                        <p className="text-sm font-medium text-white/80">{product.name}</p>
-                        <p className="mt-1 text-[11px] text-white/35">{product.brand} · ★ {product.rating} · {product.reviewCount} reviews</p>
+                        <p className="text-sm font-semibold text-[#0f1111]">{product.name}</p>
+                        <p className="mt-0.5 text-[11px] text-[#565959]">{product.brand} · <span className="font-semibold text-[#e47911]">★ {product.rating}</span> · {product.reviewCount} reviews</p>
                       </div>
-                      <span className="text-sm font-semibold text-mint">৳{product.price.toLocaleString('en-BD')}</span>
+                      <span className="text-sm font-bold text-[#0f1111]">৳{product.price.toLocaleString('en-BD')}</span>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+              <div className="rounded-xl border border-[#d5d9d9] bg-white p-6 shadow-sm">
                 <div className="mb-5 flex items-center justify-between">
                   <div>
-                    <h2 className="font-display text-lg font-semibold">Customer sentiment</h2>
-                    <p className="mt-1 text-xs text-white/40">Review emotion signals</p>
+                    <h2 className="font-display text-lg font-bold text-[#0f1111]">Customer sentiment</h2>
+                    <p className="mt-0.5 text-xs text-[#565959]">Review emotion signals</p>
                   </div>
-                  <Users size={18} className="text-white/30" />
+                  <Users size={18} className="text-[#888c8c]" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {Object.entries(sentiment).map(([key, value]) => (
-                    <div key={key} className="rounded-xl bg-black/10 p-4">
-                      <p className="text-xs capitalize text-white/45">{key}</p>
-                      <p className="mt-1 font-display text-2xl font-semibold text-mint">{value}</p>
+                    <div key={key} className="rounded-lg border border-[#eaeded] bg-[#f7f8f8] p-4">
+                      <p className="text-xs font-semibold capitalize text-[#565959]">{key}</p>
+                      <p className="mt-1 font-display text-2xl font-bold text-[#c45500]">{value}</p>
                     </div>
                   ))}
                 </div>
@@ -179,36 +179,41 @@ export default function AdminPage() {
 
           <Section id="stock-fraud" className="mt-6">
             <div className="grid gap-6 lg:grid-cols-3">
-              <div className="rounded-2xl border border-amber-300/15 bg-amber-300/[0.05] p-5 lg:col-span-1">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle size={17} className="text-amber-200" />
-                  <h2 className="font-display text-lg font-semibold">Low stock</h2>
+              <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-6 shadow-sm lg:col-span-1">
+                <div className="flex items-center gap-2 text-amber-900">
+                  <AlertTriangle size={18} className="text-[#c45500]" />
+                  <h2 className="font-display text-lg font-bold text-[#0f1111]">Low stock</h2>
                 </div>
                 <div className="mt-4 space-y-3">
                   {lowStock.length ? (
                     lowStock.map((product) => (
                       <div key={product._id} className="flex justify-between text-sm">
-                        <span className="text-white/70">{product.name}</span>
-                        <span className="font-semibold text-amber-200">{product.stock} left</span>
+                        <span className="font-medium text-[#0f1111]">{product.name}</span>
+                        <span className="font-bold text-[#c45500]">{product.stock} left</span>
                       </div>
                     ))
                   ) : (
-                    <p className="text-sm text-white/40">All products are well stocked.</p>
+                    <p className="text-sm text-[#565959]">All products are well stocked.</p>
                   )}
                 </div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 lg:col-span-2">
+              <div className="rounded-xl border border-[#d5d9d9] bg-white p-6 shadow-sm lg:col-span-2">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck size={17} className="text-violet-200" />
-                  <h2 className="font-display text-lg font-semibold">Fraud demo</h2>
+                  <ShieldCheck size={18} className="text-[#FF9900]" />
+                  <h2 className="font-display text-lg font-bold text-[#0f1111]">Fraud demo</h2>
                 </div>
-                <p className="mt-2 text-sm text-white/45">Run a high-risk order simulation through the business rules engine.</p>
-                <button onClick={checkFraud} className="mt-4 rounded-xl bg-violet px-4 py-2.5 text-sm font-semibold transition hover:scale-[1.02]">Run risk check</button>
+                <p className="mt-1 text-sm text-[#565959]">Run a high-risk order simulation through the business rules engine.</p>
+                <button
+                  onClick={checkFraud}
+                  className="mt-4 rounded-full border border-[#fcd200] bg-[#ffd814] px-5 py-2 text-sm font-bold text-[#0f1111] shadow-sm transition hover:bg-[#f7ca00]"
+                >
+                  Run risk check
+                </button>
                 {fraud && (
-                  <div className="mt-4 rounded-xl border border-rose-300/20 bg-rose-300/10 p-4">
-                    <p className="text-sm font-semibold uppercase text-rose-200">{fraud.risk} risk · {fraud.score}/100</p>
-                    <p className="mt-2 text-xs text-white/60">{fraud.flags.join(' · ')}</p>
-                    <p className="mt-2 text-xs text-white/45">{fraud.recommendation}</p>
+                  <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 p-4">
+                    <p className="text-sm font-bold uppercase text-rose-800">{fraud.risk} risk · {fraud.score}/100</p>
+                    <p className="mt-2 text-xs font-medium text-rose-900">{fraud.flags.join(' · ')}</p>
+                    <p className="mt-1 text-xs text-rose-700">{fraud.recommendation}</p>
                   </div>
                 )}
               </div>
@@ -216,14 +221,19 @@ export default function AdminPage() {
           </Section>
 
           <Section id="notification" className="mt-6">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+            <div className="rounded-xl border border-[#d5d9d9] bg-white p-6 shadow-sm">
               <div className="flex items-center gap-2">
-                <Bell size={17} className="text-mint" />
-                <h2 className="font-display text-lg font-semibold">Notification generator</h2>
+                <Bell size={18} className="text-[#FF9900]" />
+                <h2 className="font-display text-lg font-bold text-[#0f1111]">Notification generator</h2>
               </div>
-              <p className="mt-2 text-sm text-white/45">Generate a customer-ready shipping update using ShopPilot.</p>
-              <button onClick={createNotification} className="mt-4 rounded-xl border border-mint/30 bg-mint/10 px-4 py-2.5 text-sm font-semibold text-mint transition hover:bg-mint/20">Generate notification</button>
-              {notification && <p className="mt-4 rounded-xl bg-black/10 p-4 text-sm leading-6 text-white/70">{notification.message}</p>}
+              <p className="mt-1 text-sm text-[#565959]">Generate a customer-ready shipping update using ShopPilot.</p>
+              <button
+                onClick={createNotification}
+                className="mt-4 rounded-full border border-[#fcd200] bg-[#ffd814] px-5 py-2 text-sm font-bold text-[#0f1111] shadow-sm transition hover:bg-[#f7ca00]"
+              >
+                Generate notification
+              </button>
+              {notification && <p className="mt-4 rounded-lg border border-[#eaeded] bg-[#f7f8f8] p-4 text-sm leading-6 text-[#0f1111]">{notification.message}</p>}
             </div>
           </Section>
         </div>

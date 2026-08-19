@@ -52,22 +52,104 @@ export default function ProductUploadForm({ onCreated }) {
   };
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
-      <div className="mb-5 flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-xl bg-mint/10 text-mint"><ImagePlus size={17} /></span><div><h2 className="font-display text-lg font-semibold">Upload a product</h2><p className="mt-1 text-xs text-white/40">Save catalog details and an image to MongoDB</p></div></div>
-      <div className="grid gap-4 md:grid-cols-2">
-        <input name="name" required placeholder="Product name" className="rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm text-white outline-none focus:border-violet" />
-        <input name="brand" required placeholder="Brand" className="rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm text-white outline-none focus:border-violet" />
-        <select name="category" required defaultValue="" className="rounded-xl border border-white/10 bg-[#0d1a2c] px-4 py-3 text-sm text-white/80 outline-none focus:border-violet"><option value="" disabled>Select category</option>{categories.map((category) => <option key={category}>{category}</option>)}</select>
-        <input name="tags" placeholder="Tags: laptop, gaming, budget" className="rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm text-white outline-none focus:border-violet" />
-        <input name="price" required min="0" type="number" placeholder="Selling price (BDT)" className="rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm text-white outline-none focus:border-violet" />
-        <input name="originalPrice" min="0" type="number" placeholder="Original price (BDT)" className="rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm text-white outline-none focus:border-violet" />
-        <input name="stock" required min="0" type="number" placeholder="Stock quantity" className="rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm text-white outline-none focus:border-violet" />
-        <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-white/20 bg-black/10 px-4 py-3 text-sm text-white/55 hover:border-mint/50"><Upload size={16} className="text-mint" /><span className="truncate">Choose product image (max 2MB)</span><input name="image" type="file" accept="image/*" onChange={handleImageChange} className="hidden" /></label>
+    <form onSubmit={submit} className="rounded-xl border border-[#d5d9d9] bg-white p-6 shadow-sm">
+      <div className="mb-5 flex items-center gap-3">
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f0f2f2] text-[#131921]">
+          <ImagePlus size={18} />
+        </span>
+        <div>
+          <h2 className="font-display text-lg font-bold text-[#0f1111]">Upload a product</h2>
+          <p className="mt-0.5 text-xs text-[#565959]">Save catalog details and an image to MongoDB</p>
+        </div>
       </div>
-      <textarea name="description" required rows="3" placeholder="Product description" className="mt-4 w-full rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm text-white outline-none focus:border-violet" />
-      {preview && <img src={preview} alt="Product preview" className="mt-4 h-28 w-28 rounded-xl object-cover" />}
-      {status.message && <p className={`mt-4 rounded-xl px-3 py-2 text-xs ${status.type === 'success' ? 'bg-mint/10 text-mint' : 'bg-rose-400/10 text-rose-200'}`}>{status.message}</p>}
-      <button disabled={loading} className="mt-5 flex items-center gap-2 rounded-xl bg-mint px-4 py-3 text-sm font-semibold text-ink transition hover:scale-[1.01] disabled:opacity-50"><Upload size={16} />{loading ? 'Uploading…' : 'Save product'}</button>
+      <div className="grid gap-4 md:grid-cols-2">
+        <input
+          name="name"
+          required
+          placeholder="Product name"
+          className="rounded-lg border border-[#d5d9d9] bg-white px-3.5 py-2.5 text-sm text-[#0f1111] outline-none focus:border-[#FF9900]"
+        />
+        <input
+          name="brand"
+          required
+          placeholder="Brand"
+          className="rounded-lg border border-[#d5d9d9] bg-white px-3.5 py-2.5 text-sm text-[#0f1111] outline-none focus:border-[#FF9900]"
+        />
+        <select
+          name="category"
+          required
+          defaultValue=""
+          className="rounded-lg border border-[#d5d9d9] bg-white px-3.5 py-2.5 text-sm text-[#0f1111] outline-none focus:border-[#FF9900]"
+        >
+          <option value="" disabled>Select category</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>{category}</option>
+          ))}
+        </select>
+        <input
+          name="tags"
+          placeholder="Tags: laptop, gaming, budget"
+          className="rounded-lg border border-[#d5d9d9] bg-white px-3.5 py-2.5 text-sm text-[#0f1111] outline-none focus:border-[#FF9900]"
+        />
+        <input
+          name="price"
+          required
+          min="0"
+          type="number"
+          placeholder="Selling price (BDT)"
+          className="rounded-lg border border-[#d5d9d9] bg-white px-3.5 py-2.5 text-sm text-[#0f1111] outline-none focus:border-[#FF9900]"
+        />
+        <input
+          name="originalPrice"
+          min="0"
+          type="number"
+          placeholder="Original price (BDT)"
+          className="rounded-lg border border-[#d5d9d9] bg-white px-3.5 py-2.5 text-sm text-[#0f1111] outline-none focus:border-[#FF9900]"
+        />
+        <input
+          name="stock"
+          required
+          min="0"
+          type="number"
+          placeholder="Stock quantity"
+          className="rounded-lg border border-[#d5d9d9] bg-white px-3.5 py-2.5 text-sm text-[#0f1111] outline-none focus:border-[#FF9900]"
+        />
+        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-[#d5d9d9] bg-[#f7f8f8] px-3.5 py-2.5 text-sm text-[#565959] transition hover:border-[#FF9900]">
+          <Upload size={16} className="text-[#FF9900]" />
+          <span className="truncate">Choose product image (max 2MB)</span>
+          <input name="image" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+        </label>
+      </div>
+      <textarea
+        name="description"
+        required
+        rows="3"
+        placeholder="Product description"
+        className="mt-4 w-full rounded-lg border border-[#d5d9d9] bg-white px-3.5 py-2.5 text-sm text-[#0f1111] outline-none focus:border-[#FF9900]"
+      />
+      {preview && (
+        <img
+          src={preview}
+          alt="Product preview"
+          className="mt-4 h-28 w-28 rounded-lg border border-[#eaeded] object-cover"
+        />
+      )}
+      {status.message && (
+        <p
+          className={`mt-4 rounded-lg border px-3.5 py-2 text-xs ${
+            status.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-rose-200 bg-rose-50 text-rose-800'
+          }`}
+        >
+          {status.message}
+        </p>
+      )}
+      <button
+        disabled={loading}
+        className="mt-5 flex items-center gap-2 rounded-full border border-[#fcd200] bg-[#ffd814] px-6 py-2.5 text-sm font-bold text-[#0f1111] shadow-sm transition hover:bg-[#f7ca00] disabled:opacity-50"
+      >
+        <Upload size={16} />
+        {loading ? 'Uploading…' : 'Save product'}
+      </button>
     </form>
   );
 }
