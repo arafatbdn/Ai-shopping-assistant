@@ -45,7 +45,7 @@ const products = [
   { name: '8BitDo Ultimate Controller', slug: '8bitdo-ultimate-controller', brand: '8BitDo', category: 'gaming-accessories', description: 'Wireless game controller with precision sticks, charging dock, and multi-platform support.', price: 6900, originalPrice: 7900, discountPercentage: 13, stock: 14, tags: ['gaming', 'controller', 'accessories', 'wireless'], rating: 4.7, reviewCount: 104, popularityScore: 88, specs: { connection: 'Wireless / USB', battery: '22 hours', compatibility: 'PC / Switch' } },
   { name: 'Samsung Galaxy Watch6', slug: 'samsung-galaxy-watch6', brand: 'Samsung', category: 'wearables', description: 'Smartwatch with health tracking, sleep insights, GPS, and a vivid AMOLED display.', price: 24900, originalPrice: 28900, discountPercentage: 14, stock: 8, tags: ['wearable', 'smartwatch', 'fitness', 'health'], rating: 4.6, reviewCount: 105, popularityScore: 86, specs: { display: 'AMOLED', battery: '40 hours', gps: 'Built-in' } },
   { name: 'Huawei Band 9', slug: 'huawei-band-9', brand: 'Huawei', category: 'wearables', description: 'Lightweight fitness band with heart-rate monitoring, sleep tracking, and a bright screen.', price: 5900, originalPrice: 6900, discountPercentage: 14, stock: 24, tags: ['wearable', 'fitness', 'smartwatch', 'health'], rating: 4.4, reviewCount: 88, popularityScore: 79, specs: { display: 'AMOLED', battery: '14 days', waterResistance: '5 ATM' } },
-]; 
+];
 
 async function seed() {
   if (!process.env.MONGODB_URI) throw new Error('Set MONGODB_URI before running the seed script');

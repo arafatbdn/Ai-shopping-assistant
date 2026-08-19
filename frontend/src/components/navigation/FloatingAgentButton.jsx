@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import { Bot, ChevronRight, CircleHelp, Mic, Send, Sparkles, X } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { Bot, ChevronRight, CircleHelp, Mic, Minus, Send, Sparkles, X } from 'lucide-react';
 import useAssistantChat from '../../features/assistant/hooks/useAssistantChat.js';
+import { useAssistant } from '../../features/assistant/context/AssistantContext.jsx';
 import ProductResults from '../assistant/ProductResults.jsx';
 import { formatAssistantMessage } from '../../shared/utils/formatMessage.jsx';
 
 export default function FloatingAgentButton() {
-  const [open, setOpen] = useState(false);
+  const { isMinimized, restoreChat, floatingOpen, setFloatingOpen, isHomePage } = useAssistant();
   const messagesEndRef = useRef(null);
   const {
     message,
@@ -21,18 +22,26 @@ export default function FloatingAgentButton() {
   } = useAssistantChat();
 
   useEffect(() => {
-    if (open) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, open]);
+    if (floatingOpen) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, floatingOpen]);
 
-  if (!open) {
+  const handleButtonClick = () => {
+    if (isHomePage && isMinimized) {
+      restoreChat();
+    } else {
+      setFloatingOpen(true);
+    }
+  };
+
+  if (!floatingOpen) {
     return (
       <button
-        onClick={() => setOpen(true)}
+        onClick={handleButtonClick}
         aria-label="Open ShopPilot Shopping Agent"
-        title="Ask ShopPilot"
-        className="fixed bottom-6 right-5 z-50 grid h-14 w-14 place-items-center rounded-full border border-[#FF9900]/50 bg-[#FF9900] text-[#131921] shadow-2xl shadow-black/30 transition hover:scale-105 hover:bg-[#e47911] sm:bottom-7 sm:right-7"
+        title={isHomePage && isMinimized ? 'Restore ShopPilot chat' : 'Ask ShopPilot'}
+        className="fixed bottom-6 right-5 z-50 grid h-14 w-14 place-items-center rounded-full border border-[#FF9900]/50 bg-[#FF9900] text-[#131921] shadow-2xl shadow-black/30 transition hover:scale-110 hover:bg-[#e47911] active:scale-95 sm:bottom-7 sm:right-7"
       >
-        <span className="absolute inset-0 animate-ping rounded-full bg-[#FF9900]/30" />
+        <span className={`absolute inset-0 rounded-full bg-[#FF9900]/30 ${isMinimized ? 'animate-ping' : ''}`} />
         <span className="relative grid h-10 w-10 place-items-center rounded-full bg-[#131921]/10">
           <Bot size={22} className="text-[#131921]" />
           <Sparkles size={11} className="absolute right-0.5 top-0.5 fill-[#131921] text-[#131921]" />
@@ -57,8 +66,17 @@ export default function FloatingAgentButton() {
           <div className="flex items-center gap-1">
             <CircleHelp size={15} className="mr-1 text-white/30" />
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => setFloatingOpen(false)}
+              aria-label="Minimize ShopPilot chat"
+              title="Minimize to icon"
+              className="rounded-lg p-1.5 text-white/60 transition hover:bg-white/10 hover:text-[#FF9900]"
+            >
+              <Minus size={17} />
+            </button>
+            <button
+              onClick={() => setFloatingOpen(false)}
               aria-label="Close ShopPilot chat"
+              title="Close chat"
               className="rounded-lg p-1.5 text-white/60 transition hover:bg-white/10 hover:text-white"
             >
               <X size={17} />

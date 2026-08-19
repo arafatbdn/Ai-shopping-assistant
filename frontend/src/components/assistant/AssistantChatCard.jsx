@@ -5,6 +5,7 @@ import {
   Headset,
   Loader2,
   Mic,
+  Minus,
   Phone,
   PhoneOff,
   Radio,
@@ -20,7 +21,7 @@ import AssistantStatusPill from '../../features/assistant/components/AssistantSt
 import ProductResults from './ProductResults.jsx';
 import { formatAssistantMessage } from '../../shared/utils/formatMessage.jsx';
 
-export default function AssistantChatCard({ selectedPrompt, autoSubmit }) {
+export default function AssistantChatCard({ selectedPrompt, autoSubmit, onMinimize }) {
   const textChat = useAssistantChat(selectedPrompt, autoSubmit);
   const live = useLiveConversation();
   const [audioMode, setAudioMode] = useState(false);
@@ -40,6 +41,7 @@ export default function AssistantChatCard({ selectedPrompt, autoSubmit }) {
           live.stop();
           setAudioMode(false);
         }}
+        onMinimize={onMinimize}
       />
     );
   }
@@ -49,11 +51,12 @@ export default function AssistantChatCard({ selectedPrompt, autoSubmit }) {
       textChat={textChat}
       onEnterAudio={() => setAudioMode(true)}
       audioSupported={live.supported}
+      onMinimize={onMinimize}
     />
   );
 }
 
-function TextPanel({ textChat, onEnterAudio, audioSupported }) {
+function TextPanel({ textChat, onEnterAudio, audioSupported, onMinimize }) {
   const {
     message,
     updateMessage,
@@ -112,6 +115,17 @@ function TextPanel({ textChat, onEnterAudio, audioSupported }) {
               </button>
             )}
             <CircleHelp size={17} className="text-white/35" />
+            {onMinimize && (
+              <button
+                type="button"
+                onClick={onMinimize}
+                aria-label="Minimize ShopPilot chat"
+                title="Minimize chat"
+                className="ml-0.5 rounded-lg p-1.5 text-white/60 transition hover:bg-white/10 hover:text-[#FF9900]"
+              >
+                <Minus size={18} />
+              </button>
+            )}
           </div>
         </div>
 
@@ -210,7 +224,7 @@ function TextPanel({ textChat, onEnterAudio, audioSupported }) {
   );
 }
 
-function LivePanel({ live, onExit }) {
+function LivePanel({ live, onExit, onMinimize }) {
   const { status, error, start, stop, inputTranscript, outputTranscript, isLive } = live;
   const busy = status === 'connecting' || status === 'thinking';
 
@@ -230,14 +244,27 @@ function LivePanel({ live, onExit }) {
               <p className="mt-0.5 text-[11px] font-medium text-[#f3a847]">Native Gemini audio · hands-free</p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onExit}
-            aria-label="Exit voice conversation"
-            className="rounded-lg p-2 text-white/60 transition hover:bg-white/10 hover:text-white"
-          >
-            <CircleHelp size={17} className="text-white/35" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={onExit}
+              aria-label="Exit voice conversation"
+              className="rounded-lg p-2 text-white/60 transition hover:bg-white/10 hover:text-white"
+            >
+              <CircleHelp size={17} className="text-white/35" />
+            </button>
+            {onMinimize && (
+              <button
+                type="button"
+                onClick={onMinimize}
+                aria-label="Minimize ShopPilot chat"
+                title="Minimize chat"
+                className="rounded-lg p-1.5 text-white/60 transition hover:bg-white/10 hover:text-[#FF9900]"
+              >
+                <Minus size={18} />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="space-y-4 bg-[#131921] p-5">
