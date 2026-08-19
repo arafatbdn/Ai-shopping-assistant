@@ -27,11 +27,18 @@ export default function CartPage() {
 
   const subtotal = useMemo(() => (cart.items || []).reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0), [cart]);
 
-  const changeQuantity = async (productId, amount) => {
+  const getProductId = (product) => {
+    if (!product) return null;
+    return typeof product === 'object' ? (product._id || product.id) : String(product);
+  };
+
+  const changeQuantity = async (product, amount) => {
+    const productId = getProductId(product);
+    if (!productId) return;
     try {
       if (amount > 0) await addCartItem(productId, amount);
       else if (amount < 0) {
-        const item = cart.items.find((entry) => String(entry.product?._id) === String(productId));
+        const item = cart.items.find((entry) => String(getProductId(entry.product)) === String(productId));
         if (item?.quantity > 1) await updateCartItem(productId, item.quantity - 1);
         else await removeCartItem(productId);
       }
@@ -83,55 +90,69 @@ export default function CartPage() {
       ) : (
         <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
           <div className="space-y-3">
-            {cart.items.map((item) => (
-              <article
-                key={item.product?._id}
-                className="flex items-center gap-4 rounded-xl border border-[#d5d9d9] bg-white p-4 shadow-sm"
-              >
-                <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#eaeded] bg-[#f7f8f8] p-1">
-                  {item.product?.images?.[0] ? (
-                    <img src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-contain mix-blend-multiply" />
-                  ) : (
-                    <Package size={25} className="text-[#888c8c]" />
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-[#0f1111] hover:text-[#007185]">{item.product?.name}</p>
-                  <p className="mt-1 text-xs text-[#565959]">
-                    {item.product?.brand} · ৳{item.product?.price?.toLocaleString('en-BD')}
-                  </p>
-                  <div className="mt-3 flex items-center gap-2">
+            {cart.items.filter((item) => Boolean(item.product)).map((item, index) => {
+              const productId = getProductId(item.product);
+              const itemImage = (Array.isArray(item.product?.images) && item.product.images.length > 0 ? item.product.images[0] : item.product?.image) || '';
+              return (
+                <article
+                  key={productId || index}
+                  className="flex items-center gap-4 rounded-xl border border-[#d5d9d9] bg-white p-4 shadow-sm"
+                >
+                  <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#eaeded] bg-[#f7f8f8] p-1">
+                    {itemImage ? (
+                      <img
+                        src={itemImage}
+                        alt={item.product?.name || 'Product'}
+                        className="h-full w-full object-contain mix-blend-multiply"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <Package size={25} className="text-[#888c8c]" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-[#0f1111] hover:text-[#007185]">{item.product?.name || 'Item'}</p>
+                    <p className="mt-1 text-xs text-[#565959]">
+                      {item.product?.brand || 'Product'} · ৳{(item.product?.price || 0).toLocaleString('en-BD')}
+                    </p>
+                    <div className="mt-3 flex items-center gap-2">
+                      <button
+                        onClick={() => changeQuantity(item.product, -1)}
+                        disabled={!productId}
+                        className="rounded-md border border-[#d5d9d9] bg-[#f0f2f2] p-1.5 text-[#0f1111] transition hover:bg-[#e3e6e6] disabled:opacity-40"
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus size={13} />
+                      </button>
+                      <span className="min-w-6 text-center text-xs font-bold text-[#0f1111]">{item.quantity}</span>
+                      <button
+                        onClick={() => changeQuantity(item.product, 1)}
+                        disabled={!productId}
+                        className="rounded-md border border-[#d5d9d9] bg-[#f0f2f2] p-1.5 text-[#0f1111] transition hover:bg-[#e3e6e6] disabled:opacity-40"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus size={13} />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-base font-bold text-[#0f1111]">
+                      ৳{((item.product?.price || 0) * item.quantity).toLocaleString('en-BD')}
+                    </p>
                     <button
-                      onClick={() => changeQuantity(item.product?._id, -1)}
-                      className="rounded-md border border-[#d5d9d9] bg-[#f0f2f2] p-1.5 text-[#0f1111] transition hover:bg-[#e3e6e6]"
-                      aria-label="Decrease quantity"
+                      onClick={() => productId && removeCartItem(productId).then(loadCart)}
+                      disabled={!productId}
+                      className="mt-3 text-[#888c8c] transition hover:text-[#B12704] disabled:opacity-40"
+                      aria-label="Remove from cart"
                     >
-                      <Minus size={13} />
-                    </button>
-                    <span className="min-w-6 text-center text-xs font-bold text-[#0f1111]">{item.quantity}</span>
-                    <button
-                      onClick={() => changeQuantity(item.product?._id, 1)}
-                      className="rounded-md border border-[#d5d9d9] bg-[#f0f2f2] p-1.5 text-[#0f1111] transition hover:bg-[#e3e6e6]"
-                      aria-label="Increase quantity"
-                    >
-                      <Plus size={13} />
+                      <Trash2 size={16} />
                     </button>
                   </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-base font-bold text-[#0f1111]">
-                    ৳{((item.product?.price || 0) * item.quantity).toLocaleString('en-BD')}
-                  </p>
-                  <button
-                    onClick={() => removeCartItem(item.product?._id).then(loadCart)}
-                    className="mt-3 text-[#888c8c] transition hover:text-[#B12704]"
-                    aria-label="Remove from cart"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
           <aside className="h-fit rounded-xl border border-[#d5d9d9] bg-white p-5 shadow-sm">
             <h2 className="font-display text-lg font-bold text-[#0f1111]">Order summary</h2>

@@ -11,7 +11,7 @@ const api = axios.create({
 // Letting axios auto-detect per-request (it picks `multipart/form-data; boundary=...`
 // when given a FormData instance) keeps both JSON and multipart working.
 api.interceptors.request.use((config) => {
-  const token = window.localStorage.getItem('shoppilot_access_token');
+  const token = window.localStorage.getItem('nova_access_token') || window.localStorage.getItem('shoppilot_access_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });

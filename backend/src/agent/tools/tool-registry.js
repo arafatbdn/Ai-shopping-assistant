@@ -9,6 +9,8 @@ import { compareProducts } from './compareProducts.tool.js';
 import { detectSentiment } from './detectSentiment.tool.js';
 import { findAlternativeProducts } from './findAlternativeProducts.tool.js';
 import { generateInvoice } from './generateInvoice.tool.js';
+import { getCart } from './getCart.tool.js';
+import { getWishlist } from './getWishlist.tool.js';
 import { getProductDetails } from './getProductDetails.tool.js';
 import { getShoppingInsights } from './getShoppingInsights.tool.js';
 import { getUserOrders } from './getUserOrders.tool.js';
@@ -27,9 +29,11 @@ export const shoppingToolServices = {
   getProductDetails: (args) => getProductDetails(args),
   recommendProducts: (args) => recommendProducts(args),
   searchByBudget: (args) => searchByBudget(args),
+  getCart: (_args, context) => getCart(context.user),
   addToCart: (args, context) => addToCart(context.user, args),
   removeFromCart: (args, context) => removeFromCart(context.user, args),
   clearCart: (_args, context) => clearCart(context.user),
+  getWishlist: (_args, context) => getWishlist(context.user),
   addToWishlist: (args, context) => addToWishlist(context.user, args),
   removeFromWishlist: (args, context) => removeFromWishlist(context.user, args),
   trackOrder: (args, context) => trackOrder(context.user, args),
