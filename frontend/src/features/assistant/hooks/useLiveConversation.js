@@ -362,9 +362,6 @@ export default function useLiveConversation() {
               speechConfig: {
                 voiceConfig: { prebuiltVoiceConfig: { voiceName: data.voice } },
               },
-              thinkingConfig: {
-                thinkingBudget: 0,
-              },
               temperature: 0.3,
             },
             // Live API expects a Content object, not a bare string.

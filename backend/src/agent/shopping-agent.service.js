@@ -88,9 +88,6 @@ export async function runShoppingAgent({ message, history = [], user }) {
           temperature: 0.2,
           tools: [{ functionDeclarations: shoppingToolDefinitions }],
           toolConfig: { functionCallingConfig: { mode: 'AUTO' } },
-          thinkingConfig: {
-            thinkingBudget: 0,
-          },
         },
       });
 
