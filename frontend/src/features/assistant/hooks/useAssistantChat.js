@@ -11,8 +11,9 @@ export default function useAssistantChat(selectedPrompt = '', autoSubmit = false
   const [listening, setListening] = useState(false);
   const [voiceLanguage, setVoiceLanguage] = useState(() => window.localStorage.getItem('nova_voice_language') || 'bn-BD');
   const recognitionRef = useRef(null);
+  const latestSpeechRef = useRef('');
   const lastSpokenRef = useRef('');
-  const { speak, stopSpeaking, voiceOutputEnabled, toggleVoiceOutput, supported: ttsSupported, speaking } = useSpeechSynthesis(voiceLanguage);
+  const { speak, stopSpeaking, voiceOutputEnabled, enableVoiceOutput, toggleVoiceOutput, supported: ttsSupported, speaking } = useSpeechSynthesis(voiceLanguage);
 
   const updateMessage = (value) => {
     setMessage(value);
@@ -34,11 +35,13 @@ export default function useAssistantChat(selectedPrompt = '', autoSubmit = false
     }
 
     if (listening && recognitionRef.current) {
+      latestSpeechRef.current = '';
       recognitionRef.current.stop();
       return;
     }
 
     stopSpeaking();
+    latestSpeechRef.current = '';
 
     const recognition = new SpeechRecognition();
     recognition.lang = voiceLanguage;
@@ -51,9 +54,12 @@ export default function useAssistantChat(selectedPrompt = '', autoSubmit = false
     };
     recognition.onresult = (event) => {
       const transcript = Array.from(event.results).map((result) => result[0].transcript).join(' ');
-      updateMessage(transcript.trim());
+      const text = transcript.trim();
+      latestSpeechRef.current = text;
+      updateMessage(text);
     };
     recognition.onerror = (event) => {
+      latestSpeechRef.current = '';
       const messages = {
         'not-allowed': 'Microphone permission is blocked. Allow microphone access for localhost and try again.',
         'audio-capture': 'No microphone was found. Check your microphone connection.',
@@ -63,10 +69,19 @@ export default function useAssistantChat(selectedPrompt = '', autoSubmit = false
       setError(messages[event.error] || 'Voice input could not be captured. Please try again.');
       setListening(false);
     };
-    recognition.onnomatch = () => setError('I could not understand that. Please speak again.');
+    recognition.onnomatch = () => {
+      latestSpeechRef.current = '';
+      setError('I could not understand that. Please speak again.');
+    };
     recognition.onend = () => {
       setListening(false);
       recognitionRef.current = null;
+      const spokenText = latestSpeechRef.current;
+      latestSpeechRef.current = '';
+      if (spokenText) {
+        enableVoiceOutput?.();
+        void sendMessage(spokenText);
+      }
     };
     recognitionRef.current = recognition;
     try {

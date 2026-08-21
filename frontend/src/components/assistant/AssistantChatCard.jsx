@@ -33,6 +33,11 @@ export default function AssistantChatCard({ selectedPrompt, autoSubmit, onMinimi
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioMode]);
 
+  const handleEnterAudio = () => {
+    setAudioMode(true);
+    void live.start();
+  };
+
   if (audioMode) {
     return (
       <LivePanel
@@ -49,7 +54,7 @@ export default function AssistantChatCard({ selectedPrompt, autoSubmit, onMinimi
   return (
     <TextPanel
       textChat={textChat}
-      onEnterAudio={() => setAudioMode(true)}
+      onEnterAudio={handleEnterAudio}
       audioSupported={live.supported}
       onMinimize={onMinimize}
     />

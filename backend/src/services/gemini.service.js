@@ -87,6 +87,9 @@ export async function generateGeminiText({ systemInstruction, prompt }) {
       config: {
         systemInstruction,
         temperature: 0.35,
+        thinkingConfig: {
+          thinkingBudget: 0,
+        },
       },
     });
 

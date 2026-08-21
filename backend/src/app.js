@@ -16,19 +16,35 @@ dotenv.config();
 
 const app = express();
 
+const getAllowedOrigins = () => {
+  const envOrigins = process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.split(',').map((origin) => origin.trim().replace(/\/+$/, ''))
+    : [];
+
+  return [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'https://ai-shopping-assistant-eosin.vercel.app',
+    ...envOrigins,
+  ].filter(Boolean);
+};
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowedOrigins = [
-        process.env.CLIENT_URL || 'http://localhost:5173',
-        'http://localhost:5173',
-        'http://127.0.0.1:5173',
-        'http://localhost:5500',
-        'http://127.0.0.1:5500',
-      ];
-      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      // Allow requests with no origin (like mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true);
+
+      const normalizedOrigin = origin.replace(/\/+$/, '');
+      const allowedOrigins = getAllowedOrigins();
+
+      if (allowedOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+
       return callback(new Error('Origin is not allowed by CORS'));
     },
+    credentials: true,
   }),
 );
 app.use(express.json());

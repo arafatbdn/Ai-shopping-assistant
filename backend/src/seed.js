@@ -71,7 +71,7 @@ async function seed() {
 
   await User.findOneAndUpdate(
     { email: 'admin@nova.shop' },
-    { name: 'Nova Admin', email: 'admin@nova.shop', role: 'admin', passwordHash, interests: ['electronics', 'analytics'], preferences: { language: 'en' } },
+    { name: 'Admin', email: 'admin@nova.shop', role: 'admin', passwordHash, interests: ['electronics', 'analytics'], preferences: { language: 'en' } },
     { upsert: true, new: true, setDefaultsOnInsert: true },
   );
 

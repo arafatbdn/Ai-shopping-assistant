@@ -64,7 +64,7 @@ export default function useSpeechSynthesis(language = 'bn-BD') {
       synth.cancel();
       const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = language;
-      utterance.rate = 0.95;
+      utterance.rate = 1.05;
       utterance.pitch = 1;
       const voice = pickVoice(voices, language);
       if (voice) utterance.voice = voice;
@@ -79,6 +79,7 @@ export default function useSpeechSynthesis(language = 'bn-BD') {
       };
       utteranceRef.current = utterance;
       try {
+        if (synth.paused) synth.resume();
         synth.speak(utterance);
       } catch {
         setSpeaking(false);
@@ -86,6 +87,13 @@ export default function useSpeechSynthesis(language = 'bn-BD') {
     },
     [supported, voiceOutputEnabled, voices, language]
   );
+
+  const enableVoiceOutput = useCallback(() => {
+    setVoiceOutputEnabled(true);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(STORAGE_KEY, 'true');
+    }
+  }, []);
 
   const toggleVoiceOutput = useCallback(() => {
     setVoiceOutputEnabled((current) => {
@@ -102,6 +110,7 @@ export default function useSpeechSynthesis(language = 'bn-BD') {
     supported,
     speaking,
     voiceOutputEnabled,
+    enableVoiceOutput,
     toggleVoiceOutput,
     speak,
     stopSpeaking,

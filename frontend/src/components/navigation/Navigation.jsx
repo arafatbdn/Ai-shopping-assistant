@@ -38,7 +38,7 @@ export default function Navigation({ open, onToggle }) {
       <div className="flex items-center gap-2.5">
         {user ? (
           <button onClick={signOut} title="Sign out" className="hidden items-center gap-2 rounded-lg border border-[#FF9900]/40 bg-[#FF9900]/15 px-3.5 py-1.5 text-sm font-medium text-[#FF9900] transition hover:bg-[#FF9900]/25 sm:flex">
-            <UserRound size={16} /> {user.name || user.email}
+            <UserRound size={16} /> {(user.name ? user.name.replace(/^Nova\s+/i, '') : '') || user.email}
           </button>
         ) : (
           <Link to="/login?next=/" className="hidden items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-3.5 py-1.5 text-sm font-medium text-white transition hover:border-[#FF9900] hover:text-[#FF9900] sm:flex">

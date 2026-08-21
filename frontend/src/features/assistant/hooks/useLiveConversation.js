@@ -36,8 +36,8 @@ export default function useLiveConversation() {
   const audioContextRef = useRef(null);
   const inputNodeRef = useRef(null);
   const inputStreamRef = useRef(null);
-  const playbackQueueRef = useRef([]);
-  const playingRef = useRef(false);
+  const nextScheduledTimeRef = useRef(0);
+  const activeSourcesRef = useRef([]);
   const closedByUserRef = useRef(false);
   const setupCompleteRef = useRef(false);
   const startMicCaptureRef = useRef(null);
@@ -48,8 +48,11 @@ export default function useLiveConversation() {
   }, []);
 
   const stopAllAudio = useCallback(() => {
-    playbackQueueRef.current = [];
-    playingRef.current = false;
+    activeSourcesRef.current.forEach((s) => {
+      try { s.stop(); } catch {}
+    });
+    activeSourcesRef.current = [];
+    nextScheduledTimeRef.current = 0;
     if (inputNodeRef.current) {
       try { inputNodeRef.current.disconnect(); } catch {}
       inputNodeRef.current.ondataavailable = null;
@@ -71,37 +74,30 @@ export default function useLiveConversation() {
     socket.send(JSON.stringify(message));
   }, []);
 
-  const playNextChunk = useCallback(() => {
-    const ctx = audioContextRef.current;
-    if (!ctx || playbackQueueRef.current.length === 0) {
-      playingRef.current = false;
-      return;
-    }
-    if (ctx.state === 'suspended') {
-      ctx.resume().catch(() => {});
-    }
-    playingRef.current = true;
-    const { buffer, onEnded } = playbackQueueRef.current.shift();
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
-    source.connect(ctx.destination);
-    source.onended = () => {
-      onEnded?.();
-      playNextChunk();
-    };
-    source.start();
-  }, []);
-
   const queueAudio = useCallback((base64Pcm) => {
     const ctx = audioContextRef.current;
     if (!ctx) return;
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
     const bytes = base64ToBytes(base64Pcm);
     const samples = int16leToFloat32(bytes);
     const buffer = ctx.createBuffer(1, samples.length, OUTPUT_SAMPLE_RATE);
     buffer.getChannelData(0).set(samples);
-    playbackQueueRef.current.push({ buffer });
-    if (!playingRef.current) playNextChunk();
-  }, [playNextChunk]);
+
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+
+    const now = ctx.currentTime;
+    const startTime = Math.max(now, nextScheduledTimeRef.current);
+    source.start(startTime);
+    nextScheduledTimeRef.current = startTime + buffer.duration;
+    activeSourcesRef.current.push(source);
+    source.onended = () => {
+      activeSourcesRef.current = activeSourcesRef.current.filter((s) => s !== source);
+    };
+  }, []);
 
   const handleToolCalls = useCallback(async (functionCalls) => {
     if (!Array.isArray(functionCalls) || functionCalls.length === 0) return;
@@ -167,8 +163,12 @@ export default function useLiveConversation() {
     const serverContent = payload.serverContent;
     if (serverContent) {
       if (serverContent.interrupted) {
-        // Model was interrupted; drop queued audio so we don't talk over the user.
-        playbackQueueRef.current = [];
+        // Model was interrupted; stop active audio immediately so we don't talk over the user.
+        activeSourcesRef.current.forEach((s) => {
+          try { s.stop(); } catch {}
+        });
+        activeSourcesRef.current = [];
+        nextScheduledTimeRef.current = 0;
         setStatus('ready');
         return;
       }
@@ -256,7 +256,22 @@ export default function useLiveConversation() {
       const node = new AudioWorkletNode(ctx, 'live-mic-capture');
       node.port.onmessage = (event) => {
         if (event.data?.type === 'pcm' && setupCompleteRef.current && event.data.buffer) {
-          const bytes = new Uint8Array(event.data.buffer);
+          const { buffer, rms } = event.data;
+
+          // Instant Client-Side Barge-In:
+          // If user speaks (energy > threshold) while model audio is playing, cut audio immediately!
+          if (rms > 0.045 && activeSourcesRef.current.length > 0) {
+            log('User speech detected during model playback — instant client-side barge-in');
+            activeSourcesRef.current.forEach((s) => {
+              try { s.stop(); } catch {}
+            });
+            activeSourcesRef.current = [];
+            nextScheduledTimeRef.current = 0;
+            setStatus('listening');
+            sendMessage({ realtimeInput: { activityStart: {} } });
+          }
+
+          const bytes = new Uint8Array(buffer);
           const base64 = bytesToBase64(bytes);
           sendMessage({
             realtimeInput: {
@@ -274,11 +289,25 @@ export default function useLiveConversation() {
       // We don't connect to destination — we only want the audio data, not playback.
       inputNodeRef.current = node;
     } else {
-      const bufferSize = 4096;
+      const bufferSize = 1024;
       const processor = ctx.createScriptProcessor(bufferSize, 1, 1);
       processor.onaudioprocess = (e) => {
         if (!setupCompleteRef.current) return;
         const input = e.inputBuffer.getChannelData(0);
+        let sumSq = 0;
+        for (let i = 0; i < input.length; i += 1) sumSq += input[i] * input[i];
+        const rms = Math.sqrt(sumSq / input.length);
+
+        if (rms > 0.045 && activeSourcesRef.current.length > 0) {
+          activeSourcesRef.current.forEach((s) => {
+            try { s.stop(); } catch {}
+          });
+          activeSourcesRef.current = [];
+          nextScheduledTimeRef.current = 0;
+          setStatus('listening');
+          sendMessage({ realtimeInput: { activityStart: {} } });
+        }
+
         const pcm = float32ToInt16le(input);
         sendMessage({
           realtimeInput: {
@@ -333,6 +362,10 @@ export default function useLiveConversation() {
               speechConfig: {
                 voiceConfig: { prebuiltVoiceConfig: { voiceName: data.voice } },
               },
+              thinkingConfig: {
+                thinkingBudget: 0,
+              },
+              temperature: 0.3,
             },
             // Live API expects a Content object, not a bare string.
             systemInstruction: {
@@ -397,7 +430,11 @@ export default function useLiveConversation() {
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ realtimeInput: { activityStart: {} } }));
     }
-    playbackQueueRef.current = [];
+    activeSourcesRef.current.forEach((s) => {
+      try { s.stop(); } catch {}
+    });
+    activeSourcesRef.current = [];
+    nextScheduledTimeRef.current = 0;
   }, []);
 
   useEffect(() => {
@@ -463,8 +500,9 @@ function liveWorkletUrl() {
     class LiveMicCapture extends AudioWorkletProcessor {
       constructor() {
         super();
-        this.buffer = new Int16Array(2048);
+        this.buffer = new Int16Array(512);
         this.bufferIndex = 0;
+        this.sumSq = 0;
       }
 
       process(inputs) {
@@ -473,12 +511,15 @@ function liveWorkletUrl() {
 
         for (let i = 0; i < channel.length; i += 1) {
           const v = Math.max(-1, Math.min(1, channel[i]));
+          this.sumSq += v * v;
           this.buffer[this.bufferIndex++] = v < 0 ? v * 0x8000 : v * 0x7fff;
 
           if (this.bufferIndex >= this.buffer.length) {
+            const rms = Math.sqrt(this.sumSq / this.buffer.length);
             const out = this.buffer.slice();
-            this.port.postMessage({ type: 'pcm', buffer: out.buffer }, [out.buffer]);
+            this.port.postMessage({ type: 'pcm', buffer: out.buffer, rms }, [out.buffer]);
             this.bufferIndex = 0;
+            this.sumSq = 0;
           }
         }
         return true;
