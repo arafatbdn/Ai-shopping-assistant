@@ -11,10 +11,14 @@ import intelligenceRoutes from './routes/intelligence.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import agentRoutes from './routes/agent.routes.js';
 import liveRoutes from './routes/live.routes.js';
+import { connectDatabase } from './config/db.js';
 
 dotenv.config();
 
 const app = express();
+
+// Eagerly initiate database connection for serverless/cold starts
+connectDatabase().catch(() => {});
 
 const getAllowedOrigins = () => {
   const envOrigins = process.env.CLIENT_URL
@@ -49,6 +53,18 @@ app.use(
 );
 app.use(express.json());
 
+// Ensure database connection is established for serverless/Vercel requests
+app.use(async (_request, _response, next) => {
+  if (mongoose.connection.readyState !== 1 && process.env.MONGODB_URI) {
+    try {
+      await connectDatabase();
+    } catch {
+      // Errors are handled and logged safely in connectDatabase
+    }
+  }
+  next();
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/assistant', assistantRoutes);
 app.use('/api/agent', agentRoutes);
@@ -59,11 +75,29 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/intelligence', intelligenceRoutes);
 app.use('/api/admin', adminRoutes);
 
-app.get('/api/health', (_request, response) => {
+app.get('/api/health', async (_request, response) => {
+  if (mongoose.connection.readyState !== 1 && process.env.MONGODB_URI) {
+    try {
+      await connectDatabase();
+    } catch {
+      // Errors are handled and logged safely in connectDatabase
+    }
+  }
+
+  const readyStates = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting',
+  };
+
+  const dbState = readyStates[mongoose.connection.readyState] || 'disconnected';
+
   response.json({
     ok: true,
     service: 'ai-shopping-assistant-api',
-    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    database: dbState,
+    mongoEnvConfigured: Boolean(process.env.MONGODB_URI),
     timestamp: new Date().toISOString(),
   });
 });
